@@ -5,7 +5,7 @@ export const getUser = /* GraphQL */ `
   query GetUser($id: ID!) {
     getUser(id: $id) {
       id
-      name
+      email
       words {
         nextToken
         __typename
@@ -25,7 +25,7 @@ export const listUsers = /* GraphQL */ `
     listUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        name
+        email
         createdAt
         updatedAt
         __typename
@@ -39,16 +39,10 @@ export const getWord = /* GraphQL */ `
   query GetWord($id: ID!) {
     getWord(id: $id) {
       id
-      user {
-        id
-        name
-        createdAt
-        updatedAt
-        __typename
-      }
       word
       translation
       isLearned
+      type
       createdAt
       updatedAt
       userWordsId
@@ -68,6 +62,40 @@ export const listWords = /* GraphQL */ `
         word
         translation
         isLearned
+        type
+        createdAt
+        updatedAt
+        userWordsId
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const wordByDate = /* GraphQL */ `
+  query WordByDate(
+    $type: String!
+    $createdAt: ModelStringKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelWordFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    wordByDate(
+      type: $type
+      createdAt: $createdAt
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        word
+        translation
+        isLearned
+        type
         createdAt
         updatedAt
         userWordsId

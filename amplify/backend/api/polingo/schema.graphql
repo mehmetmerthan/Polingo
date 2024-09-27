@@ -5,14 +5,20 @@ input AMPLIFY {
 } # FOR TESTING ONLY!
 type User @model {
   id: ID!
-  name: String!
+  email: String!
   words: [Word] @hasMany
 }
 
 type Word @model {
   id: ID!
-  user: User @belongsTo
   word: String!
   translation: String!
   isLearned: Boolean!
+  type: String!
+    @index(
+      name: "wordByDate"
+      queryField: "wordByDate"
+      sortKeyFields: ["createdAt"]
+    )
+  createdAt: String!
 }

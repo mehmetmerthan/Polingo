@@ -8,7 +8,7 @@ export const createUser = /* GraphQL */ `
   ) {
     createUser(input: $input, condition: $condition) {
       id
-      name
+      email
       words {
         nextToken
         __typename
@@ -26,7 +26,7 @@ export const updateUser = /* GraphQL */ `
   ) {
     updateUser(input: $input, condition: $condition) {
       id
-      name
+      email
       words {
         nextToken
         __typename
@@ -44,7 +44,7 @@ export const deleteUser = /* GraphQL */ `
   ) {
     deleteUser(input: $input, condition: $condition) {
       id
-      name
+      email
       words {
         nextToken
         __typename
@@ -62,16 +62,10 @@ export const createWord = /* GraphQL */ `
   ) {
     createWord(input: $input, condition: $condition) {
       id
-      user {
-        id
-        name
-        createdAt
-        updatedAt
-        __typename
-      }
       word
       translation
       isLearned
+      type
       createdAt
       updatedAt
       userWordsId
@@ -86,16 +80,10 @@ export const updateWord = /* GraphQL */ `
   ) {
     updateWord(input: $input, condition: $condition) {
       id
-      user {
-        id
-        name
-        createdAt
-        updatedAt
-        __typename
-      }
       word
       translation
       isLearned
+      type
       createdAt
       updatedAt
       userWordsId
@@ -110,16 +98,10 @@ export const deleteWord = /* GraphQL */ `
   ) {
     deleteWord(input: $input, condition: $condition) {
       id
-      user {
-        id
-        name
-        createdAt
-        updatedAt
-        __typename
-      }
       word
       translation
       isLearned
+      type
       createdAt
       updatedAt
       userWordsId
