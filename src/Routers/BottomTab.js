@@ -1,6 +1,6 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import DrawerNaw from "./DrawerNav";
-import PersonalDictionary from "../Screens/PersonalDictionary";
+import MaterialTopTab from "./MaterialTopTab";
 const Tab = createBottomTabNavigator();
 
 export default function BottomTab() {
@@ -11,7 +11,7 @@ export default function BottomTab() {
         component={DrawerNaw}
         options={{ headerShown: false }}
       />
-      <Tab.Screen name="Dictinory" component={PersonalDictionary} />
+      <Tab.Screen name="Dictinory" component={MaterialTopTab} />
     </Tab.Navigator>
   );
 }

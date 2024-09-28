@@ -7,70 +7,80 @@ import {
   RefreshControl,
 } from "react-native";
 import { FloatingAction } from "react-native-floating-action";
-import { SearchBarComponent } from "../components/SearchBarComponent";
-import { WordList } from "../components/WordList";
-import { AddWordForm } from "../components/AddWordForm";
-import { fetchWords } from "../Utils/Service/wordService";
-import { getUserId } from "../Utils/Service/authService";
-import styles from "../styles/dictionaryStyles";
+import { SearchBarComponent } from "../../components/DictonaryComponents/SearchBarComponent";
+import { WordListLearning } from "../../components/DictonaryComponents/WordListLearning";
+import { AddWordForm } from "../../components/DictonaryComponents/AddWordForm";
+import { fetchWords } from "../../Utils/Service/wordService";
+import { getUserId } from "../../Utils/Service/authService";
+import styles from "../../styles/dictionaryStyles";
 
-export default function PersonalDictionary() {
+export default function DictionaryLearning({
+  wordListLearning,
+  setWordListLearning,
+  setWordListLearned,
+}) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [wordList, setWordList] = useState([]);
   const [isAddFormVisible, setIsAddFormVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [nextToken, setNextToken] = useState(null);
   const [userId, setUserId] = useState("");
   const [refreshing, setRefreshing] = useState(false);
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      const userId = await getUserId();
-      setUserId(userId);
-      const { words, nextToken } = await fetchWords(userId);
-      setWordList(words);
-      setLoading(false);
-      setNextToken(nextToken);
-    };
-    fetchData();
-  }, []);
-
+  const fetchData = async () => {
+    setLoading(true);
+    const userId = await getUserId();
+    setUserId(userId);
+    const { words, nextToken } = await fetchWords({
+      userId: userId,
+      nextToken: null,
+      searchTerm: "",
+      isLearned: false,
+    });
+    setWordListLearning(words);
+    setLoading(false);
+    setNextToken(nextToken);
+  };
+  const searchWords = async () => {
+    setLoading(true);
+    const { words } = await fetchWords({
+      userId: userId,
+      nextToken: null,
+      searchTerm: searchTerm,
+    });
+    setWordListLearning(words);
+    setLoading(false);
+  };
   const loadMoreWords = async () => {
     if (loading || !nextToken) return;
     setLoading(true);
-    const { words: newWords, nextToken: newNextToken } = await fetchWords(
-      userId,
-      nextToken
-    );
-    setWordList((prevWords) => [...prevWords, ...newWords]);
+    const { words: newWords, nextToken: newNextToken } = await fetchWords({
+      userId: userId,
+      nextToken: nextToken,
+      searchTerm: "",
+      isLearned: false,
+    });
+    setWordListLearning((prevWords) => [...prevWords, ...newWords]);
     setNextToken(newNextToken);
     setLoading(false);
   };
   const onRefresh = async () => {
     setRefreshing(true);
-    const { words, nextToken } = await fetchWords(userId);
-    setWordList(words);
+    const { words, nextToken } = await fetchWords({
+      userId: userId,
+      nextToken: null,
+      searchTerm: "",
+      isLearned: false,
+    });
+    setWordListLearning(words);
     setNextToken(nextToken);
     setRefreshing(false);
   };
   useEffect(() => {
-    const searchWords = async () => {
-      setLoading(true);
-      const { words } = await fetchWords(userId, null, searchTerm);
-      setWordList(words);
-      setLoading(false);
-    };
-
+    fetchData();
+  }, []);
+  useEffect(() => {
     if (searchTerm.length > 0) {
       searchWords();
     } else {
-      const fetchData = async () => {
-        setLoading(true);
-        const { words, nextToken } = await fetchWords(userId);
-        setWordList(words);
-        setLoading(false);
-        setNextToken(nextToken);
-      };
       fetchData();
     }
   }, [searchTerm]);
@@ -82,14 +92,15 @@ export default function PersonalDictionary() {
         setSearchTerm={setSearchTerm}
       />
       <FlatList
-        data={wordList}
+        data={wordListLearning}
         keyExtractor={(item) => item.id}
         renderItem={({ item, index }) => (
-          <WordList
+          <WordListLearning
             item={item}
             index={index}
-            setWordList={setWordList}
+            setWordListLearning={setWordListLearning}
             setLoading={setLoading}
+            setWordListLearned={setWordListLearned}
           />
         )}
         onEndReached={loadMoreWords}
@@ -105,7 +116,8 @@ export default function PersonalDictionary() {
         <AddWordForm
           setIsAddFormVisible={setIsAddFormVisible}
           userId={userId}
-          setWordList={setWordList}
+          setWordListLearning={setWordListLearning}
+          setWordListLearned={setWordListLearned}
           setLoading={setLoading}
         />
       ) : (

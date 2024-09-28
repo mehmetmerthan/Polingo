@@ -41,7 +41,7 @@ export default StyleSheet.create({
     padding: 10,
   },
   evenItem: {
-    backgroundColor: "#e4e4e4",
+    backgroundColor: "#efefef",
   },
   oddItem: {
     backgroundColor: "#ffffff",

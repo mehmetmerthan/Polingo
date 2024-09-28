@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { addWord } from "../Utils/Service/wordService";
-import styles from "../styles/dictionaryStyles";
+import { addWord } from "../../Utils/Service/wordService";
+import styles from "../../styles/dictionaryStyles";
 import { Button } from "@rneui/themed";
 
 export const AddWordForm = ({
   setIsAddFormVisible,
   userId,
-  setWordList,
+  setWordListLearning,
   setLoading,
 }) => {
   const [newWord, setNewWord] = useState("");
@@ -32,7 +32,7 @@ export const AddWordForm = ({
       setLoading
     );
     if (result) {
-      setWordList((prevList) => [result, ...prevList]);
+      setWordListLearning((prevList) => [result, ...prevList]);
       setIsAddFormVisible(false);
       setLoading(false);
       setLoadingButton(false);

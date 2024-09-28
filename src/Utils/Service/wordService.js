@@ -1,9 +1,10 @@
 import { generateClient } from "aws-amplify/api";
 import { wordByDate } from "../../graphql/queries";
-import { deleteWord, createWord } from "../../graphql/mutations";
+import { deleteWord, createWord, updateWord } from "../../graphql/mutations";
 const client = generateClient();
 
-export const fetchWords = async (userId, nextToken = null, searchTerm = "") => {
+export const fetchWords = async (params) => {
+  const { userId, nextToken = null, searchTerm = "", isLearned } = params;
   try {
     let variables;
     if (searchTerm.length === 0) {
@@ -11,7 +12,7 @@ export const fetchWords = async (userId, nextToken = null, searchTerm = "") => {
         type: "word",
         sortDirection: "DESC",
         filter: {
-          isLearned: { eq: false },
+          isLearned: { eq: isLearned },
           userWordsId: { eq: userId },
         },
         limit: 20,
@@ -81,5 +82,18 @@ export const removeWord = async (wordId) => {
     return result;
   } catch (error) {
     console.error("Error deleting the word", error);
+  }
+};
+
+export const changeWord = async (wordId, isLearned) => {
+  try {
+    const { data } = await client.graphql({
+      query: updateWord,
+      variables: { input: { id: wordId, isLearned: isLearned } },
+    });
+    const result = data.updateWord;
+    return result;
+  } catch (error) {
+    console.error("Error changing the word", error);
   }
 };

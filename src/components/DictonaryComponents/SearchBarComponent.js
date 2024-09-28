@@ -1,6 +1,6 @@
 import React from "react";
 import { SearchBar } from "@rneui/themed";
-import styles from "../styles/dictionaryStyles";
+import styles from "../../styles/dictionaryStyles";
 
 export const SearchBarComponent = ({ searchTerm, setSearchTerm }) => {
   return (

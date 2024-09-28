@@ -1,6 +1,6 @@
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import VideoList from "../Screens/VideoList";
-import WordDetail from "../Screens/WordDetail";
+import WordDetail from "../Screens/Dictionary/WordDetail";
 const Drawer = createDrawerNavigator();
 
 export default function DrawerNaw() {
