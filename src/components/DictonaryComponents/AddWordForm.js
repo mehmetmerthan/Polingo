@@ -2,14 +2,18 @@ import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { addWord } from "../../Utils/Service/wordService";
-import styles from "../../styles/dictionaryStyles";
+import styles from "../../styles/wordsStyles";
 import { Button } from "@rneui/themed";
 
 export const AddWordForm = ({
   setIsAddFormVisible,
   userId,
-  setWordListLearning,
   setLoading,
+  fetchData,
+  allWords,
+  setAllWords,
+  setLearningWordList,
+  setSlicedLearningWordList,
 }) => {
   const [newWord, setNewWord] = useState("");
   const [newWordTranslation, setNewWordTranslation] = useState("");
@@ -22,17 +26,33 @@ export const AddWordForm = ({
       setShowError(true);
       return;
     }
+    if (allWords.some((word) => word.word === newWord)) {
+      setErrorMessage("Word already exists.");
+      setShowError(true);
+      return;
+    }
     setLoading(true);
     setLoadingButton(true);
-    const result = await addWord(
+    const result = await addWord({
       userId,
       newWord,
       newWordTranslation,
       setErrorMessage,
-      setLoading
-    );
+    });
     if (result) {
-      setWordListLearning((prevList) => [result, ...prevList]);
+      await fetchData();
+      // setAllWords((prev) => [
+      //   { word: newWord, translation: newWordTranslation },
+      //   ...prev,
+      // ]);
+      // setLearningWordList((prev) => [
+      //   { word: newWord, translation: newWordTranslation },
+      //   ...prev,
+      // ]);
+      // setSlicedLearningWordList((prev) => [
+      //   { word: newWord, translation: newWordTranslation },
+      //   ...prev,
+      // ]);
       setIsAddFormVisible(false);
       setLoading(false);
       setLoadingButton(false);

@@ -3,52 +3,31 @@ import { wordByDate } from "../../graphql/queries";
 import { deleteWord, createWord, updateWord } from "../../graphql/mutations";
 const client = generateClient();
 
-export const fetchWords = async (params) => {
-  const { userId, nextToken = null, searchTerm = "", isLearned } = params;
+export const fetchWords = async ({ userId }) => {
   try {
-    let variables;
-    if (searchTerm.length === 0) {
-      variables = {
-        type: "word",
-        sortDirection: "DESC",
-        filter: {
-          isLearned: { eq: isLearned },
-          userWordsId: { eq: userId },
-        },
-        limit: 20,
-        nextToken,
-      };
-    } else {
-      variables = {
-        type: "word",
-        sortDirection: "DESC",
-        filter: {
-          userWordsId: { eq: userId },
-          ...(searchTerm && {
-            or: [
-              { word: { contains: searchTerm.toLowerCase() } },
-              {
-                translation: {
-                  contains: searchTerm.toLowerCase(),
-                },
-              },
-            ],
-          }),
-        },
-        limit: 10,
-      };
-    }
+    const variables = {
+      type: "word",
+      sortDirection: "DESC",
+      filter: {
+        userWordsId: { eq: userId },
+      },
+    };
     const { data } = await client.graphql({ query: wordByDate, variables });
+    const allWords = data.wordByDate.items;
+    const learningWords = allWords.filter((word) => word.isLearned === false);
+    const learnedWords = allWords.filter((word) => word.isLearned === true);
     return {
-      words: data.wordByDate.items,
-      nextToken: data.wordByDate.nextToken,
+      allWords,
+      learningWords,
+      learnedWords,
     };
   } catch (error) {
     console.error("Error fetching words", error);
   }
 };
 
-export const addWord = async (userId, newWord, newWordTranslation) => {
+export const addWord = async (params) => {
+  const { userId, newWord, newWordTranslation, setErrorMessage } = params;
   const word = newWord.toLowerCase();
   const translation = newWordTranslation.toLowerCase();
   const wordDetails = {
@@ -63,7 +42,6 @@ export const addWord = async (userId, newWord, newWordTranslation) => {
       query: createWord,
       variables: { input: wordDetails },
     });
-    console.log("data", data);
     const result = data.createWord;
     return result;
   } catch (error) {
@@ -85,7 +63,8 @@ export const removeWord = async (wordId) => {
   }
 };
 
-export const changeWord = async (wordId, isLearned) => {
+export const changeWord = async (params) => {
+  const { wordId, isLearned } = params;
   try {
     const { data } = await client.graphql({
       query: updateWord,
