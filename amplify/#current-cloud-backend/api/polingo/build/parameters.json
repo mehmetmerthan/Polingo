@@ -1,0 +1,7 @@
+{
+    "AppSyncApiName": "polingo",
+    "DynamoDBBillingMode": "PAY_PER_REQUEST",
+    "DynamoDBEnableServerSideEncryption": false,
+    "S3DeploymentBucket": "amplify-polingo-staging-21c87-deployment",
+    "S3DeploymentRootKey": "amplify-appsync-files/83d8eebe9018fcb166ab6723732ed13ef1f9990f"
+}

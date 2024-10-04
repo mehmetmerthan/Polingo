@@ -1,0 +1,124 @@
+{
+  "providers": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-polingo-staging-21c87-authRole",
+      "UnauthRoleArn": "arn:aws:iam::607219595660:role/amplify-polingo-staging-21c87-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::607219595660:role/amplify-polingo-staging-21c87-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-polingo-staging-21c87-deployment",
+      "UnauthRoleName": "amplify-polingo-staging-21c87-unauthRole",
+      "StackName": "amplify-polingo-staging-21c87",
+      "StackId": "arn:aws:cloudformation:us-east-1:607219595660:stack/amplify-polingo-staging-21c87/35210850-7cca-11ef-9f08-124e0717e8af",
+      "AmplifyAppId": "d186exdukxfd1d",
+      "AuthTriggerTemplateURL": "https://s3.amazonaws.com/amplify-polingo-staging-21c87-deployment/amplify-cfn-templates/auth/auth-trigger-cloudformation-template.json"
+    }
+  },
+  "auth": {
+    "polingoaed73920": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [
+        {
+          "category": "function",
+          "resourceName": "polingoaed73920PostConfirmation",
+          "triggerProvider": "Cognito",
+          "attributes": [
+            "Arn",
+            "Name"
+          ]
+        }
+      ],
+      "customAuth": false,
+      "frontendAuthConfig": {
+        "socialProviders": [],
+        "usernameAttributes": [
+          "EMAIL"
+        ],
+        "signupAttributes": [
+          "EMAIL"
+        ],
+        "passwordProtectionSettings": {
+          "passwordPolicyMinLength": 8,
+          "passwordPolicyCharacters": []
+        },
+        "mfaConfiguration": "OFF",
+        "mfaTypes": [
+          "SMS"
+        ],
+        "verificationMechanisms": [
+          "EMAIL"
+        ]
+      },
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-polingo-staging-21c87-deployment/amplify-cfn-templates/auth/polingoaed73920-cloudformation-template.json",
+        "logicalId": "authpolingoaed73920"
+      },
+      "lastPushTimeStamp": "2024-09-27T19:49:14.484Z",
+      "output": {
+        "UserPoolId": "us-east-1_Ym86meErc",
+        "AppClientIDWeb": "10qa9cc4btgml4u74v1fjvorl5",
+        "AppClientID": "1tm13oto0quehe372shrlbmp8q",
+        "IdentityPoolId": "us-east-1:b559be35-cfce-4926-a477-02be40c5ce0b",
+        "UserPoolArn": "arn:aws:cognito-idp:us-east-1:607219595660:userpool/us-east-1_Ym86meErc",
+        "IdentityPoolName": "polingoaed73920_identitypool_aed73920__staging",
+        "UserPoolName": "polingoaed73920_userpool_aed73920"
+      },
+      "lastPushDirHash": "yD4QRiGDscYpv4CReu3Ak7xPT6c="
+    }
+  },
+  "api": {
+    "polingo": {
+      "service": "AppSync",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "output": {
+        "authConfig": {
+          "defaultAuthentication": {
+            "authenticationType": "API_KEY",
+            "apiKeyConfig": {
+              "apiKeyExpirationDays": 7
+            }
+          },
+          "additionalAuthenticationProviders": []
+        },
+        "GraphQLAPIIdOutput": "mfv4ibgaoffpxohe65f4e4cfia",
+        "GraphQLAPIEndpointOutput": "https://6a5xoeltdncy5d3whstry4cnqa.appsync-api.us-east-1.amazonaws.com/graphql",
+        "GraphQLAPIKeyOutput": "da2-smgxg7eah5clbkpviq4c4gpqkm"
+      },
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-polingo-staging-21c87-deployment/amplify-cfn-templates/api/cloudformation-template.json",
+        "logicalId": "apipolingo"
+      },
+      "lastPushTimeStamp": "2024-09-27T19:49:21.951Z",
+      "lastPushDirHash": "S+5KUtrKizaEL8DB5aMnL8qz0NU="
+    }
+  },
+  "function": {
+    "polingoaed73920PostConfirmation": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda",
+      "lastBuildTimeStamp": "2024-09-27T16:20:40.439Z",
+      "lastBuildType": "PROD",
+      "lastPackageTimeStamp": "2024-09-27T16:21:14.871Z",
+      "distZipFilename": "polingoaed73920PostConfirmation-766b57537a6268356a39-build.zip",
+      "s3Bucket": {
+        "deploymentBucketName": "amplify-polingo-staging-21c87-deployment",
+        "s3Key": "amplify-builds/polingoaed73920PostConfirmation-766b57537a6268356a39-build.zip"
+      },
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-polingo-staging-21c87-deployment/amplify-cfn-templates/function/polingoaed73920PostConfirmation-cloudformation-template.json",
+        "logicalId": "functionpolingoaed73920PostConfirmation"
+      },
+      "lastPushTimeStamp": "2024-09-27T19:49:14.529Z",
+      "output": {
+        "LambdaExecutionRoleArn": "arn:aws:iam::607219595660:role/polingoaed73920PostConfirmation-staging",
+        "Region": "us-east-1",
+        "Arn": "arn:aws:lambda:us-east-1:607219595660:function:polingoaed73920PostConfirmation-staging",
+        "Name": "polingoaed73920PostConfirmation-staging",
+        "LambdaExecutionRole": "polingoaed73920PostConfirmation-staging"
+      },
+      "lastPushDirHash": "8lcUqdvlI8XgS7S4KgWLxBlzZ/U="
+    }
+  }
+}
