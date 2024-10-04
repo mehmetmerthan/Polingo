@@ -1,42 +1,15 @@
 import React, { useState, useRef } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Dimensions,
-  TouchableOpacity,
-  Button,
-} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { WebView } from "react-native-webview";
-
-export default function Selectable() {
+import { Button } from "@rneui/themed";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import AntDesign from "@expo/vector-icons/AntDesign";
+export default function Webview() {
   const [selectedWord, setSelectedWord] = useState("");
+  const [translatedWord, setTranslatedWord] = useState("ASdasdassadasdasdadsd");
   const webViewRef = useRef(null);
-  // Dinamik metin
-  const text =
-    "This is a dynamic sample text. You can select any word here and long press to see the custom context menu.";
 
-  // HTML içeriği dinamik text ile
-  const htmlContent = `
-    <html>
-    <head>
-      <style>
-        body {
-          font-family: Arial, sans-serif;
-          font-size: 100px;
-          padding: 20px;
-          text-align: center; /* Metni ortala */
-        }
-      </style>
-    </head>
-    <body>
-      <p id="text-content">
-        ${text}
-      </p>
-    </body>
-    </html>
-  `;
   const injectScript = `
   var materialIconsLink = document.createElement('link');
   materialIconsLink.rel = 'stylesheet';
@@ -89,7 +62,6 @@ export default function Selectable() {
   const onMessage = (event) => {
     const word = event.nativeEvent.data;
     setSelectedWord(word);
-    console.log("Selected word:", word);
   };
 
   function handleBack() {
@@ -102,8 +74,8 @@ export default function Selectable() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.buttonsContainer}>
-        <Button title="Back" onPress={handleBack} />
-        <Button title="OnRefresh" onPress={handleOnRefresh} />
+        <Button title={"Back"} onPress={handleBack} />
+        <Button title={"OnRefresh"} onPress={handleOnRefresh} />
       </View>
       <WebView
         ref={webViewRef}
@@ -116,15 +88,29 @@ export default function Selectable() {
         injectedJavaScript={injectScript}
       />
       {selectedWord ? (
-        <View style={styles.selectedWordContainer}>
-          <Text style={styles.selectedWordText}>{selectedWord}</Text>
+        <View style={styles.wordContainer}>
           <TouchableOpacity
+            style={styles.closeButton}
             onPress={() => {
               setSelectedWord("");
+              setTranslatedWord("");
             }}
-            style={styles.closeButton}
           >
-            <Text>Close</Text>
+            <AntDesign name="pluscircle" size={30} color="green" />
+          </TouchableOpacity>
+          <View style={styles.selectedWordContainer}>
+            <Text style={styles.selectedWordText}>{selectedWord}</Text>
+            <Text style={styles.translatedText}>{translatedWord}</Text>
+          </View>
+
+          <TouchableOpacity
+            style={styles.closeButton}
+            onPress={() => {
+              setSelectedWord("");
+              setTranslatedWord("");
+            }}
+          >
+            <MaterialIcons name="cancel" size={30} color="black" />
           </TouchableOpacity>
         </View>
       ) : null}
@@ -141,31 +127,41 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     padding: 10,
   },
-  selectedWordContainer: {
+  wordContainer: {
     position: "absolute",
     flexDirection: "row",
+    justifyContent: "space-between",
     bottom: 20,
     left: 10,
     right: 10,
     backgroundColor: "#ffffff",
     borderRadius: 10,
     padding: 10,
-    borderColor: "rgba(173, 173, 173, 1)",
-    borderWidth: 1,
-    elevation: 3, // Android shadow
-    shadowColor: "#000", // iOS shadow
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 1,
+    maxHeight: 150,
+  },
+  selectedWordContainer: {
+    flexDirection: "column",
+    flex: 1,
+    justifyContent: "center",
   },
   selectedWordText: {
     fontSize: 16,
     color: "#000",
+    textAlignVertical: "center",
+    fontWeight: "500",
+  },
+  translatedText: {
+    fontSize: 14,
+    color: "#000",
+    textAlignVertical: "center",
+    fontWeight: "300",
   },
   closeButton: {
-    marginLeft: 10,
-    padding: 5,
-    borderRadius: 5,
-    backgroundColor: "#f0f0f0",
+    justifyContent: "center",
+    marginRight: 10,
+  },
+  wordButtonsContainer: {
+    flexDirection: "column",
+    justifyContent: "space-between",
   },
 });
