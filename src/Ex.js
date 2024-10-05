@@ -1,27 +1,29 @@
 import { View, Text } from "react-native";
-import React, { useEffect, useState } from "react";
-import { translate } from "@vitalets/google-translate-api";
+import React, { useEffect } from "react";
+import { generateClient } from "aws-amplify/api";
+import { listWords } from "./graphql/queries";
+const client = generateClient();
 export default function Ex() {
-  const [translated, setTranslated] = useState("");
-  useEffect(() => {
-    async function fetch() {
-      try {
-        const { text } = await translate("Привет, мир!", {
-          to: "tr",
-        });
-        setTranslated(text);
-      } catch (e) {
-        if (e.name === "TooManyRequestsError") {
-          const agent = createHttpProxyAgent("http://103.152.112.162:80");
-          const { text } = await translate("Привет, мир!", {
-            to: "tr",
-            fetchOptions: { agent },
-          });
-          setTranslated(text);
-        }
-      }
+  async function search() {
+    const userId = "04283428-6061-7012-f35b-fb347f8a0f53";
+    const searchWord = "word-translation36";
+    try {
+      const variables = {
+        filter: {
+          userWordsId: { eq: userId },
+          word: { eq: searchWord },
+        },
+      };
+      const { data } = await client.graphql({ query: listWords, variables });
+      const allWords = data.listWords.items;
+      console.log("All words", allWords);
+    } catch (error) {
+      console.error("Error searching the word", error);
     }
-    fetch();
+  }
+
+  useEffect(() => {
+    search();
   }, []);
   return (
     <View>

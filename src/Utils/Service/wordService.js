@@ -1,5 +1,5 @@
 import { generateClient } from "aws-amplify/api";
-import { wordByDate } from "../../graphql/queries";
+import { wordByDate, listWords } from "../../graphql/queries";
 import { deleteWord, createWord, updateWord } from "../../graphql/mutations";
 const client = generateClient();
 
@@ -74,5 +74,22 @@ export const changeWord = async (params) => {
     return result;
   } catch (error) {
     console.error("Error changing the word", error);
+  }
+};
+
+export const searchWord = async (params) => {
+  const { userId, searchWord } = params;
+  try {
+    const variables = {
+      filter: {
+        userWordsId: { eq: userId },
+        word: { eq: searchWord },
+      },
+    };
+    const { data } = await client.graphql({ query: listWords, variables });
+    const allWords = data.listWords.items;
+    return allWords;
+  } catch (error) {
+    console.error("Error searching the word", error);
   }
 };

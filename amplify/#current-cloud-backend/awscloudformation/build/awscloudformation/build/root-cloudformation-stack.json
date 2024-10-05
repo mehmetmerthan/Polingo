@@ -329,7 +329,7 @@
           "modules": "custom",
           "resourceName": "polingoaed73920PostConfirmation",
           "deploymentBucketName": "amplify-polingo-staging-21c87-deployment",
-          "s3Key": "amplify-builds/polingoaed73920PostConfirmation-766b57537a6268356a39-build.zip",
+          "s3Key": "amplify-builds/polingoaed73920PostConfirmation-597934776b71446c6138-build.zip",
           "env": "staging"
         }
       }

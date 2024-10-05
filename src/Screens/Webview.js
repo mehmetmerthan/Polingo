@@ -1,13 +1,27 @@
 import React, { useState, useRef } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { WebView } from "react-native-webview";
 import { Button } from "@rneui/themed";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import { translateText } from "../Utils/Service/translateService";
+import { addWord, searchWord } from "../Utils/Service/wordService";
+import { getUserId } from "../Utils/Service/authService";
 export default function Webview() {
   const [selectedWord, setSelectedWord] = useState("");
-  const [translatedWord, setTranslatedWord] = useState("ASdasdassadasdasdadsd");
+  const [translatedWord, setTranslatedWord] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [isWordExist, setIsWordExist] = useState(false);
+  const [isWordExistAlertVisible, setIsWordExistAlertVisible] = useState(false);
+  const [loadingAddWord, setLoadingAddWord] = useState(false);
+  const [error, setError] = useState("");
   const webViewRef = useRef(null);
 
   const injectScript = `
@@ -59,11 +73,33 @@ export default function Webview() {
   });
 `;
 
-  const onMessage = (event) => {
+  async function onMessage(event) {
+    setIsWordExist(false);
+    setIsWordExistAlertVisible(false);
+    setLoading(true);
     const word = event.nativeEvent.data;
     setSelectedWord(word);
-  };
-
+    const translated = await translateText({ text: word, setError });
+    setTranslatedWord(translated);
+    setLoading(false);
+  }
+  async function addWordToDb() {
+    setLoadingAddWord(true);
+    const userId = await getUserId();
+    const result = await searchWord({ userId, searchWord: selectedWord });
+    if (result.length === 0) {
+      await addWord({
+        userId: userId,
+        newWord: selectedWord,
+        newWordTranslation: translatedWord,
+      });
+      setIsWordExist(true);
+    } else {
+      setIsWordExist(true);
+      setIsWordExistAlertVisible(true);
+    }
+    setLoadingAddWord(false);
+  }
   function handleBack() {
     webViewRef.current.goBack();
   }
@@ -72,7 +108,7 @@ export default function Webview() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.buttonsContainer}>
         <Button title={"Back"} onPress={handleBack} />
         <Button title={"OnRefresh"} onPress={handleOnRefresh} />
@@ -89,32 +125,53 @@ export default function Webview() {
       />
       {selectedWord ? (
         <View style={styles.wordContainer}>
-          <TouchableOpacity
-            style={styles.closeButton}
-            onPress={() => {
-              setSelectedWord("");
-              setTranslatedWord("");
-            }}
-          >
-            <AntDesign name="pluscircle" size={30} color="green" />
-          </TouchableOpacity>
-          <View style={styles.selectedWordContainer}>
-            <Text style={styles.selectedWordText}>{selectedWord}</Text>
-            <Text style={styles.translatedText}>{translatedWord}</Text>
-          </View>
+          {loading ? (
+            <ActivityIndicator style={styles.activityIndicator} />
+          ) : (
+            <>
+              {loadingAddWord ? (
+                <ActivityIndicator style={styles.activityIndicator} />
+              ) : (
+                <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={addWordToDb}
+                >
+                  {isWordExist ? (
+                    <>
+                      <AntDesign name="check" size={30} color="green" />
+                      {isWordExistAlertVisible && (
+                        <Text style={styles.existAlert}>
+                          Word already exist
+                        </Text>
+                      )}
+                    </>
+                  ) : (
+                    <MaterialIcons name="add" size={30} color="green" />
+                  )}
+                </TouchableOpacity>
+              )}
+              <View style={styles.selectedWordContainer}>
+                <Text style={styles.selectedWordText}>{selectedWord}</Text>
+                <Text style={styles.translatedText}>{translatedWord}</Text>
+                <Text style={styles.errorText}>{error}</Text>
+              </View>
 
-          <TouchableOpacity
-            style={styles.closeButton}
-            onPress={() => {
-              setSelectedWord("");
-              setTranslatedWord("");
-            }}
-          >
-            <MaterialIcons name="cancel" size={30} color="black" />
-          </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => {
+                  setSelectedWord("");
+                  setTranslatedWord("");
+                  setIsWordExist(false);
+                  setIsWordExistAlertVisible(false);
+                }}
+              >
+                <MaterialIcons name="cancel" size={30} color="black" />
+              </TouchableOpacity>
+            </>
+          )}
         </View>
       ) : null}
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -163,5 +220,20 @@ const styles = StyleSheet.create({
   wordButtonsContainer: {
     flexDirection: "column",
     justifyContent: "space-between",
+  },
+  activityIndicator: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  existAlert: {
+    color: "green",
+    fontSize: 14,
+    fontWeight: "200",
+  },
+  errorText: {
+    color: "red",
+    fontSize: 14,
+    fontWeight: "200",
   },
 });

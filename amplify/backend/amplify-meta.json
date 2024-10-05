@@ -53,7 +53,7 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-polingo-staging-21c87-deployment/amplify-cfn-templates/auth/polingoaed73920-cloudformation-template.json",
         "logicalId": "authpolingoaed73920"
       },
-      "lastPushTimeStamp": "2024-09-27T19:49:14.484Z",
+      "lastPushTimeStamp": "2024-10-05T13:16:05.507Z",
       "output": {
         "UserPoolId": "us-east-1_Ym86meErc",
         "AppClientIDWeb": "10qa9cc4btgml4u74v1fjvorl5",
@@ -89,7 +89,7 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-polingo-staging-21c87-deployment/amplify-cfn-templates/api/cloudformation-template.json",
         "logicalId": "apipolingo"
       },
-      "lastPushTimeStamp": "2024-09-27T19:49:21.951Z",
+      "lastPushTimeStamp": "2024-10-05T13:16:12.752Z",
       "lastPushDirHash": "S+5KUtrKizaEL8DB5aMnL8qz0NU="
     }
   },
@@ -98,19 +98,19 @@
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda",
-      "lastBuildTimeStamp": "2024-09-27T16:20:40.439Z",
+      "lastBuildTimeStamp": "2024-10-05T12:15:54.184Z",
       "lastBuildType": "PROD",
-      "lastPackageTimeStamp": "2024-09-27T16:21:14.871Z",
-      "distZipFilename": "polingoaed73920PostConfirmation-766b57537a6268356a39-build.zip",
+      "lastPackageTimeStamp": "2024-10-05T12:16:27.027Z",
+      "distZipFilename": "polingoaed73920PostConfirmation-597934776b71446c6138-build.zip",
       "s3Bucket": {
         "deploymentBucketName": "amplify-polingo-staging-21c87-deployment",
-        "s3Key": "amplify-builds/polingoaed73920PostConfirmation-766b57537a6268356a39-build.zip"
+        "s3Key": "amplify-builds/polingoaed73920PostConfirmation-597934776b71446c6138-build.zip"
       },
       "providerMetadata": {
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-polingo-staging-21c87-deployment/amplify-cfn-templates/function/polingoaed73920PostConfirmation-cloudformation-template.json",
         "logicalId": "functionpolingoaed73920PostConfirmation"
       },
-      "lastPushTimeStamp": "2024-09-27T19:49:14.529Z",
+      "lastPushTimeStamp": "2024-10-05T13:16:05.534Z",
       "output": {
         "LambdaExecutionRoleArn": "arn:aws:iam::607219595660:role/polingoaed73920PostConfirmation-staging",
         "Region": "us-east-1",
@@ -118,7 +118,7 @@
         "Name": "polingoaed73920PostConfirmation-staging",
         "LambdaExecutionRole": "polingoaed73920PostConfirmation-staging"
       },
-      "lastPushDirHash": "8lcUqdvlI8XgS7S4KgWLxBlzZ/U="
+      "lastPushDirHash": "yKWRJo+2gn9GSKJO0oLLc2aa7p0="
     }
   }
 }
