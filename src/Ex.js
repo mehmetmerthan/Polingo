@@ -3,13 +3,12 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
-  Text,
   ActivityIndicator,
 } from "react-native";
 import YoutubePlayer from "react-native-youtube-iframe";
 import { getSubtitles } from "youtube-captions-scraper";
 import { WebView } from "react-native-webview";
-
+import AntDesign from "@expo/vector-icons/AntDesign";
 const Ex = () => {
   const [captions, setCaptions] = useState([]);
   const [currentCaption, setCurrentCaption] = useState("");
@@ -132,7 +131,9 @@ const Ex = () => {
         <div class="previous" onclick="window.ReactNativeWebView.postMessage('${
           captions[captions.findIndex((c) => c.text === previousCaption)]?.start
         }')">${previousCaption}</div>
-        <div class="current">${currentCaption}</div>
+        <div class="current">${
+          captions.length > 0 ? currentCaption : "No Captions Found"
+        }</div>
         <div class="next" onclick="window.ReactNativeWebView.postMessage('${
           captions[captions.findIndex((c) => c.text === nextCaption)]?.start
         }')">${nextCaption}</div>
@@ -142,7 +143,7 @@ const Ex = () => {
   `;
   return (
     <View style={styles.container}>
-      {captions.length > 0 && !isCaptionsLoading ? (
+      {!isCaptionsLoading ? (
         <>
           <YoutubePlayer
             ref={playerRef}
@@ -171,13 +172,13 @@ const Ex = () => {
             />
           </View>
           <TouchableOpacity style={styles.button} onPress={togglePlayPause}>
-            <Text style={styles.buttonText}>
-              {isPlaying ? "Pause" : "Play"}
-            </Text>
+            {isPlaying ? (
+              <AntDesign name="pause" size={100} color="black" />
+            ) : (
+              <AntDesign name="play" size={100} color="black" />
+            )}
           </TouchableOpacity>
         </>
-      ) : captions.length === 0 && !isCaptionsLoading ? (
-        <Text>No captions found</Text>
       ) : (
         <ActivityIndicator size="large" color="black" />
       )}
@@ -195,18 +196,12 @@ const styles = StyleSheet.create({
   webView: {
     width: "100%",
     height: "auto",
+    backgroundColor: "transparent",
   },
   button: {
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
-    padding: 15,
-    borderRadius: 5,
     marginBottom: 10,
-  },
-  buttonText: {
-    color: "white",
-    fontSize: 20,
   },
 });
 
