@@ -116,7 +116,7 @@ export default function ReadingWebView() {
         ref={webViewRef}
         originWhitelist={["*"]}
         source={{
-          uri: "https://www.youtube.com",
+          uri: "https://www.cbsnews.com/news/tropical-storm-milton-forms-gulf-of-mexico-florida/",
         }}
         onMessage={onMessage}
         containerStyle={styles.webviewContainer}

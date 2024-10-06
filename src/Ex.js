@@ -4,11 +4,19 @@ import {
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
+  Pressable,
+  Text,
 } from "react-native";
 import YoutubePlayer from "react-native-youtube-iframe";
 import { getSubtitles } from "youtube-captions-scraper";
 import { WebView } from "react-native-webview";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import injectScript from "./components/WebViewComponents/injectScript";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { translateText } from "./Utils/Service/translateService";
+import { addWord, searchWord } from "./Utils/Service/wordService";
+import { getUserId } from "./Utils/Service/authService";
 const Ex = () => {
   const [captions, setCaptions] = useState([]);
   const [currentCaption, setCurrentCaption] = useState("");
@@ -19,6 +27,14 @@ const Ex = () => {
   const playerRef = useRef(null);
   const videoId = "cTfpAI02cG4";
   const [currentTime, setCurrentTime] = useState(0);
+
+  const [selectedWord, setSelectedWord] = useState("");
+  const [translatedWord, setTranslatedWord] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [isWordExist, setIsWordExist] = useState(false);
+  const [isWordExistAlertVisible, setIsWordExistAlertVisible] = useState(false);
+  const [loadingAddWord, setLoadingAddWord] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     async function fetchCaptions() {
@@ -128,26 +144,53 @@ const Ex = () => {
   </head>
   <body>
     <div class="container">
-        <div class="previous" onclick="window.ReactNativeWebView.postMessage('${
-          captions[captions.findIndex((c) => c.text === previousCaption)]?.start
-        }')">${previousCaption}</div>
-        <div class="current">${
-          captions.length > 0 ? currentCaption : "No Captions Found"
-        }</div>
-        <div class="next" onclick="window.ReactNativeWebView.postMessage('${
-          captions[captions.findIndex((c) => c.text === nextCaption)]?.start
-        }')">${nextCaption}</div>
+      <div class="previous">${previousCaption}</div>
+      <div class="current">${
+        captions.length > 0 ? currentCaption : "No Captions Found"
+      }</div>
+      <div class="next">${nextCaption}</div>
     </div>
   </body>
   </html>
   `;
+  async function onMessage(event) {
+    setIsWordExist(false);
+    setIsWordExistAlertVisible(false);
+    setLoading(true);
+    const word = event.nativeEvent.data;
+    setSelectedWord(word);
+    const translated = await translateText({ text: word, setError });
+    setTranslatedWord(translated);
+    setLoading(false);
+  }
+  async function addWordToDb() {
+    setLoadingAddWord(true);
+    const userId = await getUserId();
+    const result = await searchWord({ userId, searchWord: selectedWord });
+    if (result.length === 0) {
+      await addWord({
+        userId: userId,
+        newWord: selectedWord,
+        newWordTranslation: translatedWord,
+      });
+      setIsWordExist(true);
+    } else {
+      setIsWordExist(true);
+      setIsWordExistAlertVisible(true);
+    }
+    setLoadingAddWord(false);
+  }
+  function handleBack() {}
   return (
     <View style={styles.container}>
+      <Pressable />
+      <Ionicons name="arrow-back-circle-outline" size={24} color="black" />
+      <Pressable />
       {!isCaptionsLoading ? (
         <>
           <YoutubePlayer
             ref={playerRef}
-            height={300}
+            height={220}
             play={isPlaying}
             videoId={videoId}
             onChangeState={(event) => {
@@ -162,15 +205,68 @@ const Ex = () => {
               source={{
                 html: htmlContent,
               }}
-              onMessage={(event) => {
-                const time = parseFloat(event.nativeEvent.data);
-                if (!isNaN(time)) {
-                  handleCaptionClick(time);
-                }
-              }}
+              onMessage={onMessage}
+              // onMessage={(event) => {
+              //   const time = parseFloat(event.nativeEvent.data);
+              //   if (!isNaN(time)) {
+              //     handleCaptionClick(time);
+              //   }
+              // }}
               style={styles.webView}
+              injectedJavaScript={injectScript}
+              containerStyle={styles.webviewContainer}
             />
           </View>
+          {/* <></> */}
+          {selectedWord ? (
+            <View style={styles.wordContainer}>
+              {loading ? (
+                <ActivityIndicator style={styles.activityIndicator} />
+              ) : (
+                <>
+                  {loadingAddWord ? (
+                    <ActivityIndicator style={styles.activityIndicator} />
+                  ) : (
+                    <TouchableOpacity
+                      style={styles.closeButton}
+                      onPress={addWordToDb}
+                    >
+                      {isWordExist ? (
+                        <>
+                          <AntDesign name="check" size={30} color="green" />
+                          {isWordExistAlertVisible && (
+                            <Text style={styles.existAlert}>
+                              Word already exist
+                            </Text>
+                          )}
+                        </>
+                      ) : (
+                        <MaterialIcons name="add" size={30} color="green" />
+                      )}
+                    </TouchableOpacity>
+                  )}
+                  <View style={styles.selectedWordContainer}>
+                    <Text style={styles.selectedWordText}>{selectedWord}</Text>
+                    <Text style={styles.translatedText}>{translatedWord}</Text>
+                    <Text style={styles.errorText}>{error}</Text>
+                  </View>
+
+                  <TouchableOpacity
+                    style={styles.closeButton}
+                    onPress={() => {
+                      setSelectedWord("");
+                      setTranslatedWord("");
+                      setIsWordExist(false);
+                      setIsWordExistAlertVisible(false);
+                    }}
+                  >
+                    <MaterialIcons name="cancel" size={30} color="black" />
+                  </TouchableOpacity>
+                </>
+              )}
+            </View>
+          ) : null}
+          {/* <></> */}
           <TouchableOpacity style={styles.button} onPress={togglePlayPause}>
             {isPlaying ? (
               <AntDesign name="pause" size={100} color="black" />
@@ -202,6 +298,58 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 10,
+  },
+  wordContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginHorizontal: 10,
+    marginBottom: 30,
+    backgroundColor: "#ffffff",
+    borderRadius: 10,
+    padding: 10,
+    maxHeight: 150,
+    borderWidth: 1,
+    borderColor: "#c6c6c6",
+  },
+  selectedWordContainer: {
+    flexDirection: "column",
+    flex: 1,
+    justifyContent: "center",
+  },
+  selectedWordText: {
+    fontSize: 16,
+    color: "#000",
+    textAlignVertical: "center",
+    fontWeight: "500",
+  },
+  translatedText: {
+    fontSize: 14,
+    color: "#000",
+    textAlignVertical: "center",
+    fontWeight: "300",
+  },
+  closeButton: {
+    justifyContent: "center",
+    marginRight: 10,
+  },
+  wordButtonsContainer: {
+    flexDirection: "column",
+    justifyContent: "space-between",
+  },
+  activityIndicator: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  existAlert: {
+    color: "green",
+    fontSize: 14,
+    fontWeight: "200",
+  },
+  errorText: {
+    color: "red",
+    fontSize: 14,
+    fontWeight: "200",
   },
 });
 
