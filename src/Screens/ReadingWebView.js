@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { WebView } from "react-native-webview";
 import { Button } from "@rneui/themed";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
@@ -14,7 +13,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { translateText } from "../Utils/Service/translateService";
 import { addWord, searchWord } from "../Utils/Service/wordService";
 import { getUserId } from "../Utils/Service/authService";
-export default function Webview() {
+export default function ReadingWebView() {
   const [selectedWord, setSelectedWord] = useState("");
   const [translatedWord, setTranslatedWord] = useState("");
   const [loading, setLoading] = useState(true);
@@ -117,7 +116,7 @@ export default function Webview() {
         ref={webViewRef}
         originWhitelist={["*"]}
         source={{
-          uri: "https://www.cnbc.com/2024/10/03/stock-market-today-live-updates.html",
+          uri: "https://www.youtube.com",
         }}
         onMessage={onMessage}
         containerStyle={styles.webviewContainer}

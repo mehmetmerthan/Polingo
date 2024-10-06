@@ -5,5 +5,5 @@ import amplifyconfig from "./src/amplifyconfiguration.json";
 import Ex from "./src/Ex";
 Amplify.configure(amplifyconfig);
 export default function App() {
-  return <RootRouter />;
+  return <Ex />;
 }
