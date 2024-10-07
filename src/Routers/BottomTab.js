@@ -1,6 +1,8 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import DrawerNaw from "./DrawerNav";
 import MaterialTopTab from "./MaterialTopTab";
+import HomeStack from "./HomeStack";
+import TranslateScreen from "../Screens/TranslateScreen";
+import ProfileScreen from "../Screens/ProfileScreen";
 const Tab = createBottomTabNavigator();
 
 export default function BottomTab() {
@@ -8,10 +10,12 @@ export default function BottomTab() {
     <Tab.Navigator>
       <Tab.Screen
         name="Home"
-        component={DrawerNaw}
+        component={HomeStack}
         options={{ headerShown: false }}
       />
       <Tab.Screen name="Dictinory" component={MaterialTopTab} />
+      <Tab.Screen name="Translate" component={TranslateScreen} />
+      <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );
 }
