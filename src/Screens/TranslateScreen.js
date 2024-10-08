@@ -6,25 +6,20 @@ import {
   Pressable,
   Keyboard,
   TouchableWithoutFeedback,
-  FlatList,
+  ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import { Input, Icon, Button, Divider } from "@rneui/themed";
-import { useHeaderHeight } from "@react-navigation/elements";
+import { sendAIMessage, SendAITranslate } from "../Utils/Service/AIService";
 export default function TranslateScreen() {
   const [trainingText, setTrainingText] = useState("");
   const [mainText, setMainText] = useState("");
   const [change, setChange] = useState(true);
   const [loadingTranslate, setLoadingTranslate] = useState(false);
-  const [loadingAi, setLoadingAi] = useState(false);
+  const [loadingAI, setLoadingAI] = useState(false);
   const [inputResponseText, setInputResponseText] = useState("");
-  const [chatHistory, setChatHistory] = useState([
-    { role: "model", parts: [{ text: "Hello, how can I help you?" }] },
-    { role: "user", parts: [{ text: "I want to know about the weather" }] },
-    { role: "model", parts: [{ text: "Sure, where are you located?" }] },
-    { role: "user", parts: [{ text: "I am in New York" }] },
-    { role: "model", parts: [{ text: "The weather in New York is 75°F" }] },
-  ]);
-  const flatListRef = useRef(null);
+  const [chatHistory, setChatHistory] = useState([]);
+  const scrollViewRef = useRef(null);
   const sendMessage = async () => {
     if (!mainText || loadingTranslate) {
       return;
@@ -32,60 +27,66 @@ export default function TranslateScreen() {
     setLoadingTranslate(true);
     setChatHistory([]);
     try {
-      const text = "response.text();";
-      setChatHistory([{ role: "model", parts: [{ text }] }]);
+      const text = await SendAITranslate({
+        mainText,
+        trainingText,
+        change,
+        setChatHistory,
+      });
+      const modelMessage = { role: "model", parts: [{ text }] };
+      setChatHistory((prev) => [...prev, modelMessage]);
+      console.log("chatHistory", chatHistory);
     } catch (error) {
       console.error(error);
     }
     setLoadingTranslate(false);
   };
-  const handleKeyboardDismiss = () => {
-    Keyboard.dismiss();
-  };
+
   const handlePress = () => {
     setChange(!change);
   };
-  /*
 
-*/
-
-  const responseToAi = async () => {
-    if (!inputResponseText) {
+  const responseToAI = async () => {
+    if (!inputResponseText || loadingAI) {
       return;
     }
-    setLoadingAi(true);
-    const userMessage = { role: "user", parts: [{ text: inputText }] };
-    const updatedChatHistory = [...chatHistory, userMessage];
-    setChatHistory(updatedChatHistory);
+    setLoadingAI(true);
+    const userMessage = { role: "user", parts: [{ text: inputResponseText }] };
+    //const updatedChatHistory = [...chatHistory, userMessage];
+    setChatHistory((prev) => [...prev, userMessage]);
     setInputResponseText("");
     try {
-      const result = await sendMessage(inputResponseText);
+      const result = await sendAIMessage({
+        input: inputResponseText,
+        chatHistory: chatHistory,
+      });
       const response = result;
       const text = response;
       const botMessage = { role: "model", parts: [{ text }] };
-      const finalChatHistory = [...updatedChatHistory, botMessage];
-      setChatHistory(finalChatHistory);
+      //const finalChatHistory = [...updatedChatHistory, botMessage];
+      setChatHistory((prev) => [...prev, botMessage]);
     } catch (error) {
       console.error(error);
     }
-    setLoadingAi(false);
+    setLoadingAI(false);
   };
   const refreshChat = () => {
     setChatHistory([]);
   };
   useEffect(() => {
-    if (flatListRef.current) {
-      flatListRef.current.scrollToEnd({ animated: true });
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollToEnd({ animated: true });
     }
   }, [chatHistory]);
 
   const scrollToEnd = () => {
-    if (flatListRef.current) {
-      flatListRef.current.scrollToEnd({ animated: true });
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollToEnd({ animated: true });
     }
   };
-
-  const height = useHeaderHeight();
+  const handleKeyboardDismiss = () => {
+    Keyboard.dismiss();
+  };
   const handleInputFocus = () => {
     setTimeout(() => {
       scrollToEnd();
@@ -93,7 +94,7 @@ export default function TranslateScreen() {
   };
 
   const rightIcon = (
-    <Pressable onPress={responseToAi}>
+    <Pressable onPress={responseToAI}>
       <Icon name="send" size={35} color="#2089dc" style={{ marginRight: 10 }} />
     </Pressable>
   );
@@ -103,24 +104,15 @@ export default function TranslateScreen() {
       <Icon name="delete" size={20} color="#2089dc" />
     </Pressable>
   );
-  /*
-    
-    */
-  const renderChatItem = ({ item, index }) => {
-    return (
-      <Text
-        key={Math.random()}
-        selectable={true}
-        style={item.role === "user" ? styles.userMessage : styles.botMessage}
-      >
-        {item.parts[0].text}
-      </Text>
-    );
-  };
   return (
     <View style={styles.container}>
       <TouchableWithoutFeedback onPress={handleKeyboardDismiss}>
-        <>
+        <ScrollView
+          ref={scrollViewRef}
+          onContentSizeChange={() =>
+            scrollViewRef.current.scrollToEnd({ animated: true })
+          }
+        >
           <View style={styles.textInputWrapper}>
             {change ? (
               <Text style={styles.title}>TR to EN</Text>
@@ -158,30 +150,38 @@ export default function TranslateScreen() {
           />
 
           <Divider width={1} style={{ marginTop: 50 }} />
-          <FlatList
-            ref={flatListRef}
-            data={chatHistory}
-            removeClippedSubviews={false}
-            renderItem={renderChatItem}
-            keyExtractor={(item, index) => index.toString()}
-            contentContainerStyle={styles.chatContainer}
-            extraData={chatHistory}
-            onContentSizeChange={scrollToEnd}
-            onLayout={scrollToEnd}
-          />
-        </>
+          <View style={styles.chatContainer}>
+            {chatHistory.slice(1).map((item, index) => (
+              <Text
+                key={Math.random()}
+                selectable={true}
+                style={
+                  item.role === "user" ? styles.userMessage : styles.botMessage
+                }
+              >
+                {item.parts[0].text}
+              </Text>
+            ))}
+          </View>
+          {loadingAI ||
+            (loadingTranslate && (
+              <ActivityIndicator size={"large"} style={{ marginBottom: 10 }} />
+            ))}
+        </ScrollView>
       </TouchableWithoutFeedback>
-      <Input
-        clearButtonMode="always"
-        inputContainerStyle={styles.input}
-        onChangeText={setInputResponseText}
-        placeholder={"Response to AI"}
-        value={inputResponseText}
-        rightIcon={rightIcon}
-        onFocus={handleInputFocus}
-        leftIcon={leftIcon}
-        loading={loadingAi}
-      />
+      {chatHistory.length > 1 && (
+        <Input
+          clearButtonMode="always"
+          inputContainerStyle={styles.input}
+          onChangeText={setInputResponseText}
+          placeholder={"Response to AI"}
+          value={inputResponseText}
+          rightIcon={rightIcon}
+          onFocus={handleInputFocus}
+          leftIcon={leftIcon}
+          loading={loadingAI}
+        />
+      )}
     </View>
   );
 }

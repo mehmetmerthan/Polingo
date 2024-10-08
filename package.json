@@ -11,6 +11,7 @@
   "dependencies": {
     "@aws-amplify/react-native": "^1.1.5",
     "@aws-amplify/ui-react-native": "^2.2.11",
+    "@google/generative-ai": "^0.21.0",
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-native-community/netinfo": "11.3.1",
     "@react-native-community/viewpager": "^5.0.11",
