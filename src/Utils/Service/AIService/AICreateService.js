@@ -3,7 +3,7 @@ import {
   HarmCategory,
   HarmBlockThreshold,
 } from "@google/generative-ai";
-import { API_KEY } from "../../../constants";
+import { API_KEY } from "../../../../constants";
 
 const model_name = "gemini-1.5-pro";
 const genAI = new GoogleGenerativeAI(API_KEY);
@@ -39,41 +39,33 @@ const model = genAI.getGenerativeModel({
 });
 
 const systemInstruction = `Sen çok iyi bir ingilizce öğretmenisin.`;
-function promptAITranslate({ mainText, trainingText, change }) {
-  let prompt = "";
-  if (change) {
-    if (trainingText === "") {
-      prompt = `Verilen bu Türkçe cümleyi (${mainText})  ingilizcede yaygın kullanımıyla ingilizceye çevir.`;
-    } else {
-      prompt = `Verilen bu Türkçe cümleyi (${mainText}) ve bu İngilizce çevirisini (${trainingText}) karşılaştır. 
-      Hataları düzelt, daha yaygın veya doğru kullanımı varsa belirt.
-      Hata yoksa sadece 'Hata yok' yaz.`;
-    }
-  } else {
-    if (trainingText === "") {
-      prompt = `Bu cümleyi (${mainText}) Türkçede en yaygın kullanımıyla çevir. 
-      Tam çevrilemiyorsa, benzer anlama gelen bir cümleye çevir.`;
-    } else {
-      prompt = `Bu İngilizce cümle (${mainText}) ve bu Türkçe çevirisini (${trainingText}) karşılaştır. 
-      Hataları düzelt, daha yaygın veya doğru kullanımı varsa belirt. Hata yoksa sadece 'Hata yok' yaz.`;
-    }
-  }
+function promptHandler({ input, trainingWords }) {
+  const updatedWords = trainingWords.join(", ");
+  const prompt = `Aşağıdaki listede verilen kelimeleri kullanarak İngilizce bir cümle kurdum.
+Görevin: 
+1. Cümleyi inceleyip doğru olup olmadığını kontrol etmek.
+2. Cümlede hata varsa, hatayı düzeltmek ve doğru halini vermek.
+3. Cümle doğruysa, sadece "Doğru" diye geri bildirim vermek.
+
+Kelime Listesi: "${updatedWords}" 
+Kurulan Cümle: "${input}"
+
+Eğer cümlede bir hata tespit edersen, şu adımları izle:
+- Hatanın ne olduğunu açıkla.
+- Cümleyi nasıl düzelttiğini detaylandır.
+
+Bu şekilde doğru geri bildirim verebilir misin?`;
   return prompt;
 }
-async function SendAITranslate({
-  mainText,
-  trainingText,
-  change,
-  setChatHistory,
-}) {
+
+async function SendFirst({ input, trainingWords, setChatHistory }) {
   try {
-    const prompt = promptAITranslate({ mainText, trainingText, change });
+    const prompt = promptHandler({ input, trainingWords });
     setChatHistory((prev) => {
       const userMessage = { role: "user", parts: [{ text: prompt }] };
       return [...prev, userMessage];
     });
     const result = await model.generateContent(prompt);
-    console.log(result.response.text());
     const response = result.response;
     const text = response.text();
     return text;
@@ -85,8 +77,6 @@ async function SendAITranslate({
 
 async function sendAIMessage({ input, chatHistory }) {
   try {
-    if (chatHistory[0].role === "model") {
-    }
     const chat = model.startChat({ history: chatHistory });
     const result = await chat.sendMessage(input);
     const response = result.response;
@@ -98,4 +88,4 @@ async function sendAIMessage({ input, chatHistory }) {
   }
 }
 
-export { SendAITranslate, sendAIMessage };
+export { sendAIMessage, SendFirst };

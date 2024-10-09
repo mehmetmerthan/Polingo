@@ -3,32 +3,29 @@ import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { addWord } from "../../Utils/Service/wordService";
 import styles from "../../styles/wordsStyles";
-import { Button } from "@rneui/themed";
-
+import { Button, Input } from "@rneui/themed";
+import { translateText } from "../../Utils/Service/translateService";
 export const AddWordForm = ({
   setIsAddFormVisible,
   userId,
   setLoading,
   fetchData,
   allWords,
-  setAllWords,
-  setLearningWordList,
-  setSlicedLearningWordList,
 }) => {
   const [newWord, setNewWord] = useState("");
   const [newWordTranslation, setNewWordTranslation] = useState("");
-  const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [loadingButton, setLoadingButton] = useState(false);
+  const [loadingTranslate, setLoadingTranslate] = useState(false);
   const handleAddWord = async () => {
     if (!newWord.trim() || !newWordTranslation.trim()) {
       setErrorMessage("Both fields are required.");
-      setShowError(true);
+
       return;
     }
     if (allWords.some((word) => word.word === newWord)) {
       setErrorMessage("Word already exists.");
-      setShowError(true);
+
       return;
     }
     setLoading(true);
@@ -41,25 +38,42 @@ export const AddWordForm = ({
     });
     if (result) {
       await fetchData();
-      // setAllWords((prev) => [
-      //   { word: newWord, translation: newWordTranslation },
-      //   ...prev,
-      // ]);
-      // setLearningWordList((prev) => [
-      //   { word: newWord, translation: newWordTranslation },
-      //   ...prev,
-      // ]);
-      // setSlicedLearningWordList((prev) => [
-      //   { word: newWord, translation: newWordTranslation },
-      //   ...prev,
-      // ]);
       setIsAddFormVisible(false);
       setLoading(false);
       setLoadingButton(false);
-    } else {
-      setShowError(true);
     }
   };
+  async function handleTranslate() {
+    setErrorMessage("");
+    if (!newWord.trim()) {
+      setErrorMessage("Please enter a word to translate.");
+      return;
+    }
+    setLoadingTranslate(true);
+    const result = await translateText({
+      text: newWord,
+      setError: setErrorMessage,
+    });
+    if (result) {
+      setNewWordTranslation(result);
+    }
+    setLoadingTranslate(false);
+  }
+  const rightIcon = (
+    <Button
+      onPress={handleTranslate}
+      icon={{ name: "translate", color: "#000000" }}
+      color={"transparent"}
+      loading={loadingTranslate}
+      size="md"
+      loadingStyle={{
+        backgroundColor: "#000000",
+        borderRadius: 50,
+        width: 25,
+        height: 25,
+      }}
+    />
+  );
 
   return (
     <View style={styles.inputContainer}>
@@ -75,19 +89,22 @@ export const AddWordForm = ({
         value={newWord}
         onChangeText={setNewWord}
       />
-      <TextInput
+      <Input
         style={styles.input}
         placeholder="Turkish Meaning"
         value={newWordTranslation}
         onChangeText={setNewWordTranslation}
+        clearButtonMode="always"
+        rightIcon={rightIcon}
       />
-      {showError && <Text style={styles.errorMessage}>{errorMessage}</Text>}
+      {errorMessage && <Text style={styles.errorMessage}>{errorMessage}</Text>}
       <Button
         title={"Add Word"}
         onPress={handleAddWord}
         containerStyle={styles.addButton}
         color={"#4CAF50"}
         loading={loadingButton}
+        rightIcon={rightIcon}
       />
     </View>
   );

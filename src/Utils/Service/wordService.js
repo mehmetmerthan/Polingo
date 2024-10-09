@@ -93,3 +93,22 @@ export const searchWord = async (params) => {
     console.error("Error searching the word", error);
   }
 };
+
+export const getTrainingWords = async (params) => {
+  const { userId } = params;
+  try {
+    const variables = {
+      type: "word",
+      sortDirection: "DESC",
+      limit: 5,
+      filter: {
+        userWordsId: { eq: userId },
+      },
+    };
+    const { data } = await client.graphql({ query: wordByDate, variables });
+    const allWords = data.wordByDate.items;
+    return allWords;
+  } catch (error) {
+    console.error("Error getting training words", error);
+  }
+};

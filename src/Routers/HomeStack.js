@@ -1,9 +1,9 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
-import HomeScreen from "../Screens/HomeScreen";
-import ReadingWebView from "../Screens/ReadingWebView";
-import YoutubeStack from "./YoutubeStack";
-import VideoList from "../Screens/VideoList";
+import HomeScreen from "../Screens/Home/HomeScreen";
+import WebMaterialTop from "./MaterialTop/WebMaterialTop";
+import TrainingMaterialTop from "./MaterialTop/TrainingMaterialTop";
+import Scenario from "../Screens/Scenario";
 const Stack = createNativeStackNavigator();
 export default function HomeStack() {
   return (
@@ -13,9 +13,12 @@ export default function HomeStack() {
         component={HomeScreen}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="ReadingWebView" component={ReadingWebView} />
-      <Stack.Screen name="YoutubeStack" component={YoutubeStack} />
-      <Stack.Screen name="VideoList" component={VideoList} />
+      <Stack.Screen name="WebMaterialTop" component={WebMaterialTop} />
+      <Stack.Screen
+        name="TrainingMaterialTop"
+        component={TrainingMaterialTop}
+      />
+      <Stack.Screen name="Scenario" component={Scenario} />
     </Stack.Navigator>
   );
 }

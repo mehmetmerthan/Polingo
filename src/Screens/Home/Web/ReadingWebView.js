@@ -10,9 +10,9 @@ import { WebView } from "react-native-webview";
 import { Button } from "@rneui/themed";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { translateText } from "../Utils/Service/translateService";
-import { addWord, searchWord } from "../Utils/Service/wordService";
-import { getUserId } from "../Utils/Service/authService";
+import { translateText } from "../../../Utils/Service/translateService";
+import { addWord, searchWord } from "../../../Utils/Service/wordService";
+import { getUserId } from "../../../Utils/Service/authService";
 export default function ReadingWebView() {
   const [selectedWord, setSelectedWord] = useState("");
   const [translatedWord, setTranslatedWord] = useState("");

@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
-import YouTubeWebView from "../Screens/Youtube/YoutubeWebView";
-import VideoPlayer from "../Screens/Youtube/VideoPlayer";
+import YouTubeWebView from "../Screens/Home/Web/Youtube/YoutubeWebView";
+import VideoPlayer from "../Screens/Home/Web/Youtube/VideoPlayer";
 const Stack = createNativeStackNavigator();
 export default function YoutubeStack() {
   return (

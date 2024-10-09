@@ -7,10 +7,9 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   ScrollView,
-  ActivityIndicator,
 } from "react-native";
 import { Input, Icon, Button, Divider } from "@rneui/themed";
-import { sendAIMessage, SendAITranslate } from "../Utils/Service/AIService";
+import { sendAIMessage, SendAITranslate } from "../Utils/Service/AIService/AITranslateService";
 export default function TranslateScreen() {
   const [trainingText, setTrainingText] = useState("");
   const [mainText, setMainText] = useState("");
@@ -35,7 +34,6 @@ export default function TranslateScreen() {
       });
       const modelMessage = { role: "model", parts: [{ text }] };
       setChatHistory((prev) => [...prev, modelMessage]);
-      console.log("chatHistory", chatHistory);
     } catch (error) {
       console.error(error);
     }
@@ -52,7 +50,6 @@ export default function TranslateScreen() {
     }
     setLoadingAI(true);
     const userMessage = { role: "user", parts: [{ text: inputResponseText }] };
-    //const updatedChatHistory = [...chatHistory, userMessage];
     setChatHistory((prev) => [...prev, userMessage]);
     setInputResponseText("");
     try {
@@ -63,7 +60,6 @@ export default function TranslateScreen() {
       const response = result;
       const text = response;
       const botMessage = { role: "model", parts: [{ text }] };
-      //const finalChatHistory = [...updatedChatHistory, botMessage];
       setChatHistory((prev) => [...prev, botMessage]);
     } catch (error) {
       console.error(error);
@@ -94,9 +90,19 @@ export default function TranslateScreen() {
   };
 
   const rightIcon = (
-    <Pressable onPress={responseToAI}>
-      <Icon name="send" size={35} color="#2089dc" style={{ marginRight: 10 }} />
-    </Pressable>
+    <Button
+      onPress={responseToAI}
+      icon={{ name: "send", color: "#2089dc" }}
+      color={"transparent"}
+      loading={loadingAI}
+      size="md"
+      loadingStyle={{
+        backgroundColor: "#2089dc",
+        borderRadius: 50,
+        width: 25,
+        height: 25,
+      }}
+    />
   );
 
   const leftIcon = (
@@ -147,6 +153,7 @@ export default function TranslateScreen() {
             title={"Send"}
             style={styles.button}
             loading={loadingTranslate}
+            disabled={loadingTranslate}
           />
 
           <Divider width={1} style={{ marginTop: 50 }} />
@@ -163,10 +170,6 @@ export default function TranslateScreen() {
               </Text>
             ))}
           </View>
-          {loadingAI ||
-            (loadingTranslate && (
-              <ActivityIndicator size={"large"} style={{ marginBottom: 10 }} />
-            ))}
         </ScrollView>
       </TouchableWithoutFeedback>
       {chatHistory.length > 1 && (
@@ -179,7 +182,7 @@ export default function TranslateScreen() {
           rightIcon={rightIcon}
           onFocus={handleInputFocus}
           leftIcon={leftIcon}
-          loading={loadingAI}
+          disabled={loadingAI}
         />
       )}
     </View>

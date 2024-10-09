@@ -11,12 +11,12 @@ import YoutubePlayer from "react-native-youtube-iframe";
 import { getSubtitles } from "youtube-captions-scraper";
 import { WebView } from "react-native-webview";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import injectScript from "../../components/WebViewComponents/injectScript";
+import injectScript from "../../../../components/WebViewComponents/injectScript";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { translateText } from "../../Utils/Service/translateService";
-import { addWord, searchWord } from "../../Utils/Service/wordService";
-import { getUserId } from "../../Utils/Service/authService";
+import { translateText } from "../../../../Utils/Service/translateService";
+import { addWord, searchWord } from "../../../../Utils/Service/wordService";
+import { getUserId } from "../../../../Utils/Service/authService";
 export default function VideoPlayer({ route }) {
   const { videoId } = route.params;
   const [captions, setCaptions] = useState([]);
