@@ -3,153 +3,140 @@ import {
   View,
   Text,
   StyleSheet,
+  FlatList,
   TouchableOpacity,
-  ScrollView,
+  Alert,
 } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
-import { Divider } from "@rneui/themed";
+import { Ionicons } from "@expo/vector-icons"; // Expo ikonları
+
+const wordData = {
+  word: "run",
+  meaning: "koşmak",
+  definitions: [
+    {
+      partOfSpeech: "noun",
+      definition: "An act or spell of running.",
+      example: "He went for a run in the park.",
+    },
+    {
+      partOfSpeech: "verb",
+      definition: "Move at a speed faster than a walk.",
+      example: "He can run very fast.",
+    },
+  ],
+};
+
+const playSound = (text) => {
+  Alert.alert("Ses çalınamıyor", `Ses oynatılıyor: ${text}`);
+};
+
+const translateText = (text) => {
+  Alert.alert("Çeviri işlevi", `Çevirilecek metin: ${text}`);
+};
 
 export default function WordDetail() {
-  return (
-    <ScrollView style={styles.container}>
-      <View style={styles.card}>
-        <Text style={styles.word}>Example</Text>
-        <Text style={styles.translation}>Örnek</Text>
-        <Divider style={styles.divider} />
-        <Text style={styles.definitionHeader}>Definition:</Text>
-        <Text style={styles.definition}>
-          An individual instance taken to be representative of a general
-          pattern.
-        </Text>
-        <Divider style={styles.divider} />
-        <Text style={styles.sentenceHeader}>Sentences:</Text>
-        <View style={styles.sentenceItem}>
-          <Text style={styles.sentence}>
-            • This is an example of how to use this word.
-          </Text>
-          <TouchableOpacity style={styles.playIcon}>
-            <AntDesign name="playcircleo" size={24} color="black" />
-          </TouchableOpacity>
-        </View>
-        <Text style={styles.translation}>
-          Bu kelimenin nasıl kullanılacağına dair bir örnek.
-        </Text>
-        <Divider style={styles.divider} />
-        <Text style={styles.synonymHeader}>Synonyms:</Text>
-        <View style={styles.synonymItem}>
-          <Text style={styles.synonym}>• Sample</Text>
-          <TouchableOpacity style={styles.playIcon}>
-            <AntDesign name="playcircleo" size={24} color="black" />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.synonymItem}>
-          <Text style={styles.synonym}>• Model</Text>
-          <TouchableOpacity style={styles.playIcon}>
-            <AntDesign name="playcircleo" size={24} color="black" />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.synonymItem}>
-          <Text style={styles.synonym}>• Instance</Text>
-          <TouchableOpacity style={styles.playIcon}>
-            <AntDesign name="playcircleo" size={24} color="black" />
-          </TouchableOpacity>
-        </View>
+  const renderDefinition = ({ item }) => (
+    <View style={styles.definitionContainer}>
+      <Text style={styles.partOfSpeech}>{item.partOfSpeech}</Text>
+
+      <View style={styles.row}>
+        <Text style={styles.definition}>{item.definition}</Text>
+        <TouchableOpacity onPress={() => translateText(item.definition)}>
+          <Ionicons name="language-outline" size={24} color="black" />
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.askAIButton}>
-        <Text style={styles.askAIButtonText}>Ask AI</Text>
+
+      <View style={styles.row}>
+        <Text style={styles.example}>Example: {item.example}</Text>
+        <TouchableOpacity onPress={() => translateText(item.example)}>
+          <Ionicons name="language-outline" size={24} color="black" />
+        </TouchableOpacity>
+      </View>
+
+      <TouchableOpacity onPress={() => playSound(item.example)}>
+        <Ionicons name="play-circle-outline" size={30} color="black" />
       </TouchableOpacity>
-    </ScrollView>
+    </View>
+  );
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.wordContainer}>
+        <Text style={styles.word}>{wordData.word}</Text>
+        <TouchableOpacity onPress={() => playSound(wordData.word)}>
+          <Ionicons name="play-circle-outline" size={30} color="black" />
+        </TouchableOpacity>
+      </View>
+
+      <Text style={styles.meaning}>{wordData.meaning}</Text>
+
+      <FlatList
+        data={wordData.definitions}
+        renderItem={renderDefinition}
+        keyExtractor={(item, index) => index.toString()}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 20,
     backgroundColor: "#f5f5f5",
-    padding: 10,
   },
-  card: {
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    padding: 15,
-    marginBottom: 20,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 3,
-  },
-  word: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "#333",
+  wordContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
     marginBottom: 10,
   },
-  definitionHeader: {
-    fontSize: 20,
+  word: {
+    fontSize: 32,
     fontWeight: "bold",
-    marginBottom: 5,
-    color: "#333",
+    marginRight: 10,
+    textAlign: "center",
   },
-
+  meaning: {
+    fontSize: 24,
+    color: "#555",
+    marginBottom: 20,
+    textAlign: "center",
+  },
+  definitionContainer: {
+    marginBottom: 20,
+    padding: 15,
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  partOfSpeech: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: 5,
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 10,
+  },
   definition: {
     fontSize: 16,
-    color: "#555",
-    marginBottom: 5,
-  },
-  translation: {
-    fontSize: 18,
-    color: "#777",
-    fontWeight: "300",
-  },
-  synonymHeader: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 5,
-  },
-  synonymItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 5,
-  },
-  synonym: {
-    fontSize: 16,
-    color: "#333",
-  },
-  sentenceHeader: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 5,
-  },
-  sentenceItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 5,
-  },
-  sentence: {
-    fontSize: 18,
-    color: "#333",
+    color: "#666",
     flex: 1,
+    marginRight: 10,
   },
-  playIcon: {
-    paddingLeft: 10,
-  },
-  askAIButton: {
-    backgroundColor: "#28A745",
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 5,
-    alignItems: "center",
-    alignSelf: "center",
-    marginTop: 15,
-  },
-  askAIButtonText: {
-    color: "#fff",
+  example: {
     fontSize: 16,
-    fontWeight: "bold",
-  },
-  divider: {
-    marginVertical: 15,
+    fontStyle: "italic",
+    color: "#888",
+    flex: 1,
+    marginRight: 10,
   },
 });
