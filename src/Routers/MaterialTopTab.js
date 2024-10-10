@@ -32,7 +32,9 @@ export default function MaterialTopTab() {
     fetchData();
   }, []);
   return (
-    <Tab.Navigator>
+    <Tab.Navigator screenOptions={{
+      swipeEnabled: false,
+    }}>
       <Tab.Screen
         name="Learn"
         children={() => (

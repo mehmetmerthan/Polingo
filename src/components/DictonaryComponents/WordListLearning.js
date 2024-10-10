@@ -4,6 +4,7 @@ import { ListItem, Button } from "@rneui/themed";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import styles from "../../styles/wordsStyles";
 import { removeWord, changeWord } from "../../Utils/Service/wordService";
+import WordDetailModal from "../../Screens/WordDetailModal";
 export const WordListLearning = ({
   item,
   index,
@@ -16,6 +17,7 @@ export const WordListLearning = ({
 }) => {
   const [loadingDelete, setLoadingDelete] = useState(false);
   const [loadingChange, setLoadingChange] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
   const [status, setStatus] = useState(item.isLearned);
   const handleDelete = async () => {
     try {
@@ -30,6 +32,7 @@ export const WordListLearning = ({
           prev.filter((word) => word.id !== item.id)
         );
       }
+      await fetchData();
       setLoading(false);
       setLoadingDelete(false);
     } catch (error) {
@@ -55,18 +58,25 @@ export const WordListLearning = ({
         setSlicedLearnedWordList((prev) => [updatedItem, ...prev]);
         setLearnedWordList((prev) => [updatedItem, ...prev]);
       }
+      await fetchData();
       setLoading(false);
       setLoadingChange(false);
     } catch (error) {
       console.error("Error changing the word:", error);
     }
   };
+  async function playSound(text) {
+    console.log("Ses çalınamıyor", `Ses oynatılıyor: ${text}`);
+  }
   return (
     <ListItem.Swipeable
       leftContent={(reset) => (
         <Button
           title="Info"
-          onPress={() => reset()}
+          onPress={() => {
+            setModalVisible(true);
+            reset();
+          }}
           icon={{ name: "info", color: "white" }}
           buttonStyle={{ minHeight: "100%", borderRadius: 10 }}
         />
@@ -117,10 +127,18 @@ export const WordListLearning = ({
           <Text style={styles.englishText}>{item.word}</Text>
           <Text style={styles.turkishText}>{item.translation}</Text>
         </View>
-        <TouchableOpacity style={styles.playIcon}>
+        <TouchableOpacity style={styles.playIcon} onPress={playSound}>
           <AntDesign name="playcircleo" size={24} color="black" />
         </TouchableOpacity>
       </ListItem.Content>
+      {modalVisible && (
+        <WordDetailModal
+          visible={modalVisible}
+          setVisible={setModalVisible}
+          word={item.word}
+          definition={item.definition}
+        />
+      )}
     </ListItem.Swipeable>
   );
 };
