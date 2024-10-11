@@ -4,7 +4,7 @@ import { ListItem, Button } from "@rneui/themed";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import styles from "../../styles/wordsStyles";
 import { removeWord, changeWord } from "../../Utils/Service/wordService";
-import WordDetailModal from "../../Screens/WordDetailModal";
+import WordDetailModal from "../../components/WordDetailModal";
 export const WordListLearning = ({
   item,
   index,
@@ -136,7 +136,7 @@ export const WordListLearning = ({
           visible={modalVisible}
           setVisible={setModalVisible}
           word={item.word}
-          definition={item.definition}
+          definition={item.translation}
         />
       )}
     </ListItem.Swipeable>

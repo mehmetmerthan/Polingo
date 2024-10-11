@@ -6,7 +6,9 @@ const Tab = createMaterialTopTabNavigator();
 
 export default function WebMaterialTop() {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator screenOptions={{
+      swipeEnabled: false,
+    }}>
       <Tab.Screen name="Web" component={ReadingWebView} />
       <Tab.Screen name="Youtube" component={YoutubeStack} />
     </Tab.Navigator>

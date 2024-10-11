@@ -4,6 +4,7 @@ import { ListItem, Button } from "@rneui/themed";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import styles from "../../styles/wordsStyles";
 import { removeWord, changeWord } from "../../Utils/Service/wordService";
+import WordDetailModal from "../../components/WordDetailModal";
 export const WordListLearned = ({
   item,
   index,
@@ -16,6 +17,7 @@ export const WordListLearned = ({
 }) => {
   const [loadingDelete, setLoadingDelete] = useState(false);
   const [loadingChange, setLoadingChange] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
   const [status, setStatus] = useState(item.isLearned);
   const handleDelete = async () => {
     try {
@@ -29,6 +31,7 @@ export const WordListLearned = ({
         setLearnedWordList((prev) =>
           prev.filter((word) => word.id !== item.id)
         );
+        await fetchData();
       }
       setLoading(false);
       setLoadingDelete(false);
@@ -54,6 +57,7 @@ export const WordListLearned = ({
         );
         setSlicedLearningWordList((prev) => [updatedItem, ...prev]);
         setLearningWordList((prev) => [updatedItem, ...prev]);
+        await fetchData();
       }
       setLoading(false);
       setLoadingChange(false);
@@ -61,12 +65,18 @@ export const WordListLearned = ({
       console.error("Error changing the word:", error);
     }
   };
+  async function playSound(text) {
+    console.log("Ses çalınamıyor", `Ses oynatılıyor: ${text}`);
+  }
   return (
     <ListItem.Swipeable
       leftContent={(reset) => (
         <Button
           title="Info"
-          onPress={() => reset()}
+          onPress={() => {
+            reset();
+            setModalVisible(true);
+          }}
           icon={{ name: "info", color: "white" }}
           buttonStyle={{ minHeight: "100%", borderRadius: 10 }}
         />
@@ -121,6 +131,14 @@ export const WordListLearned = ({
           <AntDesign name="playcircleo" size={24} color="black" />
         </TouchableOpacity>
       </ListItem.Content>
+      {modalVisible && (
+        <WordDetailModal
+          visible={modalVisible}
+          setVisible={setModalVisible}
+          word={item.word}
+          definition={item.translation}
+        />
+      )}
     </ListItem.Swipeable>
   );
 };

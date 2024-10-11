@@ -57,57 +57,71 @@ export default function WordDetailModal({
           <Ionicons name="language-outline" size={24} color="black" />
         </TouchableOpacity>
       </View>
-      <View style={styles.row}>
-        <Text style={styles.example} selectable={true}>
-          Example: {item.definitions[0].example}
-        </Text>
-        <TouchableOpacity
-          onPress={() => translateText(item.definitions[0].example)}
-        >
-          <Ionicons name="language-outline" size={24} color="black" />
-        </TouchableOpacity>
-      </View>
+      {item?.definitions[0]?.example && (
+        <>
+          <View style={styles.row}>
+            <Text style={styles.example} selectable={true}>
+              Example: {item.definitions[0].example}
+            </Text>
+            <TouchableOpacity
+              onPress={() => translateText(item.definitions[0].example)}
+            >
+              <Ionicons name="language-outline" size={24} color="black" />
+            </TouchableOpacity>
+          </View>
 
-      <TouchableOpacity onPress={() => playSound(item.definitions[0].example)}>
-        <Ionicons name="play-circle-outline" size={30} color="black" />
-      </TouchableOpacity>
-      <Divider style={{ marginTop: 5 }} />
+          <TouchableOpacity
+            onPress={() => playSound(item.definitions[0].example)}
+          >
+            <Ionicons name="play-circle-outline" size={30} color="black" />
+          </TouchableOpacity>
+          <Divider style={{ marginTop: 5 }} />
+        </>
+      )}
     </View>
   );
   return (
-    <ScrollView style={styles.container}>
-      <Dialog visible={visible}>
-        {loading ? (
-          <ActivityIndicator size={"large"} />
-        ) : (
-          <>
-            <View style={styles.wordContainer}>
-              <Text style={styles.word}>{word}</Text>
-              <TouchableOpacity onPress={() => playSound(wordData.word)}>
-                <Ionicons name="play-circle-outline" size={30} color="black" />
-              </TouchableOpacity>
-            </View>
-            <Text style={styles.meaning}>{definition}</Text>
-            <Divider width={1} />
-            <FlatList
-              data={wordData?.meanings}
-              renderItem={renderDefinition}
-              keyExtractor={(item, index) => index.toString()}
-            />
-          </>
-        )}
-        <Dialog.Actions>
-          <Dialog.Button onPress={toggleDialog} title="Close" />
-        </Dialog.Actions>
-      </Dialog>
-    </ScrollView>
+    <Dialog visible={visible} style={styles.container}>
+      {loading ? (
+        <ActivityIndicator size={"large"} />
+      ) : (
+        <FlatList
+          data={wordData?.meanings}
+          renderItem={renderDefinition}
+          keyExtractor={(item, index) => index.toString()}
+          ListHeaderComponent={
+            <>
+              <View style={styles.wordContainer}>
+                <Text style={styles.word}>{word}</Text>
+                <TouchableOpacity onPress={() => playSound(wordData.word)}>
+                  <Ionicons
+                    name="play-circle-outline"
+                    size={30}
+                    color="black"
+                  />
+                </TouchableOpacity>
+              </View>
+              <Text style={styles.meaning}>{definition}</Text>
+              <Divider width={1} />
+            </>
+          }
+          ListHeaderComponentStyle={{ marginTop: 30 }}
+        />
+      )}
+      <Dialog.Actions>
+        <Dialog.Button
+          onPress={toggleDialog}
+          title={"Close"}
+          containerStyle={{ marginBottom: 20 }}
+        />
+      </Dialog.Actions>
+    </Dialog>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
     backgroundColor: "#f5f5f5",
   },
   wordContainer: {

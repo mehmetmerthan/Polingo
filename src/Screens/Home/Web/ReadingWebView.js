@@ -13,6 +13,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { translateText } from "../../../Utils/Service/translateService";
 import { addWord, searchWord } from "../../../Utils/Service/wordService";
 import { getUserId } from "../../../Utils/Service/authService";
+import WordDetailModal from "../../../components/WordDetailModal";
 export default function ReadingWebView() {
   const [selectedWord, setSelectedWord] = useState("");
   const [translatedWord, setTranslatedWord] = useState("");
@@ -21,6 +22,7 @@ export default function ReadingWebView() {
   const [isWordExistAlertVisible, setIsWordExistAlertVisible] = useState(false);
   const [loadingAddWord, setLoadingAddWord] = useState(false);
   const [error, setError] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
   const webViewRef = useRef(null);
 
   const injectScript = `
@@ -53,6 +55,8 @@ export default function ReadingWebView() {
       button1.innerHTML = '<i class="material-icons">translate</i>';
       button1.style.display = 'block';
       button1.style.color = '#000000';
+      button1.style.background = 'transparent';
+      button1.style.border = 'none'; 
       button1.onclick = function() {
         window.ReactNativeWebView.postMessage(selectedText);
         document.body.removeChild(menu);
@@ -122,6 +126,14 @@ export default function ReadingWebView() {
         containerStyle={styles.webviewContainer}
         injectedJavaScript={injectScript}
       />
+      {modalVisible && selectedWord && translatedWord && (
+        <WordDetailModal
+          visible={modalVisible}
+          setVisible={setModalVisible}
+          word={selectedWord}
+          definition={translatedWord}
+        />
+      )}
       {selectedWord ? (
         <View style={styles.wordContainer}>
           {loading ? (
@@ -154,18 +166,37 @@ export default function ReadingWebView() {
                 <Text style={styles.translatedText}>{translatedWord}</Text>
                 <Text style={styles.errorText}>{error}</Text>
               </View>
-
-              <TouchableOpacity
-                style={styles.closeButton}
-                onPress={() => {
-                  setSelectedWord("");
-                  setTranslatedWord("");
-                  setIsWordExist(false);
-                  setIsWordExistAlertVisible(false);
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
                 }}
               >
-                <MaterialIcons name="cancel" size={30} color="black" />
-              </TouchableOpacity>
+                <Button
+                  icon={{
+                    name: "info",
+                    color: "green",
+                    size: 30,
+                  }}
+                  buttonStyle={{
+                    backgroundColor: "#ffffff00",
+                  }}
+                  onPress={() => {
+                    setModalVisible(true);
+                  }}
+                />
+                <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={() => {
+                    setSelectedWord("");
+                    setTranslatedWord("");
+                    setIsWordExist(false);
+                    setIsWordExistAlertVisible(false);
+                  }}
+                >
+                  <MaterialIcons name="cancel" size={30} color="black" />
+                </TouchableOpacity>
+              </View>
             </>
           )}
         </View>
@@ -194,6 +225,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
     maxHeight: 150,
+    borderWidth: 1,
+    borderColor: "#cccccc",
   },
   selectedWordContainer: {
     flexDirection: "column",

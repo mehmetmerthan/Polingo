@@ -103,6 +103,7 @@ export const getTrainingWords = async (params) => {
       limit: 5,
       filter: {
         userWordsId: { eq: userId },
+        isLearned: { eq: false },
       },
     };
     const { data } = await client.graphql({ query: wordByDate, variables });

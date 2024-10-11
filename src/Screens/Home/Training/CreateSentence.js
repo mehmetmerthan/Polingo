@@ -8,6 +8,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Pressable,
+  View,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Input, Icon, Button } from "@rneui/themed";
@@ -16,28 +17,13 @@ import {
   sendAIMessage,
   SendFirst,
 } from "../../../Utils/Service/AIService/AICreateService";
+import WordDetailModal from "../../../Components/WordDetailModal";
 export default function CreateSentence({ trainingWords }) {
   const [chatHistory, setChatHistory] = useState([]);
   const [inputText, setInputText] = useState("");
   const [loading, setLoading] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
   const flatListRef = useRef(null);
-  const loadChatHistory = async () => {
-    try {
-      const savedChatHistory = await AsyncStorage.getItem("chatHistory");
-      if (savedChatHistory) {
-        setChatHistory(JSON.parse(savedChatHistory));
-      }
-    } catch (error) {
-      console.error("Failed to load chat history:", error);
-    }
-  };
-  const saveChatHistory = async () => {
-    try {
-      await AsyncStorage.setItem("chatHistory", JSON.stringify(newChatHistory));
-    } catch (error) {
-      console.error("Failed to save chat history:", error);
-    }
-  };
   const sendMessage = async () => {
     if (!inputText || loading) {
       return;
@@ -63,7 +49,6 @@ export default function CreateSentence({ trainingWords }) {
         const result = await sendAIMessage({ inputText, chatHistory });
         const botMessage = { role: "model", parts: [{ result }] };
         setChatHistory((prev) => [...prev, botMessage]);
-        await saveChatHistory();
       } catch (error) {
         console.error(error);
       }
@@ -85,10 +70,8 @@ export default function CreateSentence({ trainingWords }) {
   };
 
   useEffect(() => {
-    console.log(trainingWords);
-    getWords();
-    loadChatHistory();
-  }, []);
+    console.log("trainingWords", trainingWords);
+  }, [trainingWords]);
 
   useEffect(() => {
     if (flatListRef.current) {
@@ -137,12 +120,31 @@ export default function CreateSentence({ trainingWords }) {
     <Text style={styles.botMessage}>
       Create sentence from your vocabulary words:{"\n"}
       {" \n"}
-      {trainingWords.map((word, index) => (
-        <Text key={index}>
-          {word.word}: {word.translation}
-          {"\n"}
-        </Text>
-      ))}
+      <View style={{ flexDirection: "column" }}>
+        {trainingWords?.map((word, index) => (
+          <View style={styles.wordContainer}>
+            <Text key={index} style={styles.word}>
+              {word.word}: {word.translation}
+              {"\n"}
+            </Text>
+            <Icon
+              name="info"
+              size={20}
+              color="#2089dc"
+              style={styles.icon}
+              onPress={() => setModalVisible(true)}
+            />
+            {modalVisible && (
+              <WordDetailModal
+                visible={modalVisible}
+                setVisible={setModalVisible}
+                word={word.word}
+                definition={word.translation}
+              />
+            )}
+          </View>
+        ))}
+      </View>
     </Text>
   );
 
@@ -223,5 +225,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingLeft: 10,
     borderRadius: 5,
+  },
+  wordContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  word: {
+    fontSize: 18,
+  },
+  icon: {
+    marginLeft: 50,
   },
 });

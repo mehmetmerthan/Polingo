@@ -1,11 +1,10 @@
-import { React, useEffect, useState } from "react";
+import { React, useState } from "react";
 import {
   Image,
   StyleSheet,
   Pressable,
   ScrollView,
   Text,
-  View,
   ActivityIndicator,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
@@ -20,7 +19,7 @@ const HomeScreen = () => {
     try {
       const userId = await getUserId();
       const words = await getTrainingWords({ userId });
-      if (words.length > 4) {
+      if (words.length > 3) {
         navigation.navigate("TrainingMaterialTop", { trainingWords: words });
       } else {
         alert("You need to learn at least 5 words to create a sentence");
@@ -51,6 +50,12 @@ const HomeScreen = () => {
             source={require("../../../assets/web.png")}
             style={styles.image}
           />
+          {loading && (
+            <ActivityIndicator
+              size={"large"}
+              style={{ position: "absolute" }}
+            />
+          )}
           <Text style={styles.overlayText}>
             Traine {"\n"}
             <Text style={styles.overlayDescription}>
