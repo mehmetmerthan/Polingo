@@ -1,0 +1,111 @@
+import React from "react";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
+
+const ScenarioList = () => {
+  const navigation = useNavigation();
+
+  const conversationScenarios = [
+    {
+      id: 1,
+      title: "Ordering at a Café",
+      description: "Learn how to order food and drinks at a café.",
+      firstMessage: "Good afternoon! What can I get for you today?",
+      role: "waiter",
+    },
+
+    {
+      id: 2,
+      title: "Booking a Hotel Room",
+      description: "Practice booking a room at a hotel.",
+      firstMessage: "How many nights will you be staying with us?",
+      role: "receptionist",
+    },
+    {
+      id: 3,
+      title: "Job Interview",
+      description: "Prepare for an English job interview.",
+      firstMessage: "Tell me about yourself and your work experience.",
+      role: "interviewer",
+    },
+    {
+      id: 4,
+      title: "Visiting a Doctor",
+      description:
+        "Learn how to explain symptoms and ask for help at a clinic.",
+      firstMessage: "What seems to be the problem?",
+      role: "doctor",
+    },
+    {
+      id: 5,
+      title: "At the Airport",
+      description: "Practice speaking at an airport check-in counter.",
+      firstMessage: "Can I see your passport and ticket, please?",
+      role: "agent",
+    },
+  ];
+
+  const handleScenarioPress = ({ role, firstMessage }) => {
+    navigation.navigate("ScenarioChat", { role, firstMessage });
+  };
+
+  const renderScenarioItem = ({ item }) => (
+    <TouchableOpacity
+      style={styles.itemContainer}
+      onPress={() =>
+        handleScenarioPress({
+          role: item.role,
+          firstMessage: item.firstMessage,
+        })
+      }
+    >
+      <Text style={styles.title}>{item.title}</Text>
+      <Text style={styles.description}>{item.description}</Text>
+    </TouchableOpacity>
+  );
+
+  return (
+    <View style={styles.container}>
+      <FlatList
+        data={conversationScenarios}
+        renderItem={renderScenarioItem}
+        keyExtractor={(item) => item.id}
+      />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: "#f4f4f4",
+  },
+  itemContainer: {
+    backgroundColor: "#fff",
+    padding: 20,
+    marginVertical: 10,
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#333",
+  },
+  description: {
+    fontSize: 14,
+    color: "#666",
+    marginTop: 5,
+  },
+});
+
+export default ScenarioList;

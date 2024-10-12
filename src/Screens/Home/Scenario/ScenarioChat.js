@@ -8,54 +8,42 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Pressable,
-  View,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Input, Icon, Button } from "@rneui/themed";
 import { useHeaderHeight } from "@react-navigation/elements";
-import {
-  sendAIMessage,
-  SendFirst,
-} from "../../../Utils/Service/AIService/AICreateService";
 import WordDetailModal from "../../../components/WordDetailModal";
-export default function CreateSentence({ route }) {
-  const { trainingWords } = route.params;
+import {
+  SendFirst,
+  sendAIMessage,
+} from "../../../Utils/Service/AIService/AIScenarioService";
+
+export default function ScenarioChat({ route }) {
+  const { role, firstMessage } = route.params;
   const [chatHistory, setChatHistory] = useState([]);
   const [inputText, setInputText] = useState("");
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [wordIndex, setWordIndex] = useState(0);
   const flatListRef = useRef(null);
   const sendMessage = async () => {
     if (!inputText || loading) {
       return;
     }
     setLoading(true);
-    if (chatHistory.length === 0) {
-      try {
-        const result = await SendFirst({
-          input: inputText,
-          trainingWords,
-          setChatHistory,
-        });
-        const modelMessage = { role: "model", parts: [{ text: result }] };
-        setChatHistory((prev) => [...prev, modelMessage]);
-      } catch (error) {
-        console.error(error);
-      }
-      setLoading(false);
-    } else {
-      try {
-        const userMessage = { role: "user", parts: [{ text: inputText }] };
-        setChatHistory((prev) => [...prev, userMessage]);
-        const result = await sendAIMessage({ inputText, chatHistory });
-        const botMessage = { role: "model", parts: [{ result }] };
-        setChatHistory((prev) => [...prev, botMessage]);
-      } catch (error) {
-        console.error(error);
-      }
-      setLoading(false);
+    try {
+      const userMessage = { role: "user", parts: [{ text: inputText }] };
+      setChatHistory((prev) => [...prev, userMessage]);
+      const result = await sendAIMessage({
+        input: inputText,
+        chatHistory,
+        role,
+      });
+      const botMessage = { role: "model", parts: [{ text: result }] };
+      setChatHistory((prev) => [...prev, botMessage]);
+    } catch (error) {
+      console.error(error);
     }
+    setLoading(false);
+    setInputText("");
   };
 
   const handleKeyboardDismiss = () => {
@@ -64,16 +52,13 @@ export default function CreateSentence({ route }) {
 
   const refreshChat = async () => {
     setChatHistory([]);
-    try {
-      await AsyncStorage.removeItem("chatHistory");
-    } catch (error) {
-      console.error("Failed to clear chat history:", error);
-    }
   };
+
   useEffect(() => {
     if (flatListRef.current) {
       flatListRef.current.scrollToEnd({ animated: true });
     }
+    //console.log(JSON.stringify(chatHistory, null, 2));
   }, [chatHistory]);
 
   const scrollToEnd = () => {
@@ -112,36 +97,32 @@ export default function CreateSentence({ route }) {
       <Icon name="delete" size={20} color="#2089dc" />
     </Pressable>
   );
-
-  const ListHeaderComponent = () => (
-    <Text style={styles.botMessage}>
-      Create sentence from your vocabulary words:{"\n"}
-      {" \n"}
-      <View style={{ flexDirection: "column" }}>
-        {trainingWords?.map((word, index) => (
-          <View style={styles.wordContainer} key={index}>
-            <Text key={index} style={styles.word}>
-              {word.word}: {word.translation}
-              {"\n"}
-            </Text>
-            <Button
-              icon={{
-                name: "info",
-                color: "#2089dc",
-                size: 20,
-                style: styles.icon,
-              }}
-              onPress={() => {
-                setWordIndex(index);
-                setModalVisible(true);
-              }}
-              color={"transparent"}
-            />
-          </View>
-        ))}
-      </View>
-    </Text>
-  );
+  async function handleStartConversation() {
+    setLoading(true);
+    try {
+      const result = await SendFirst({
+        setChatHistory,
+        firstMessage,
+        role,
+      });
+      const modelMessage = { role: "model", parts: [{ text: result }] };
+      setChatHistory((prev) => [...prev, modelMessage]);
+    } catch (error) {
+      console.error(error);
+    }
+    setLoading(false);
+  }
+  const ListHeaderComponent = () => {
+    return (
+      chatHistory.length === 0 && (
+        <Button
+          title={"Start conversation"}
+          onPress={handleStartConversation}
+          loading={loading}
+        />
+      )
+    );
+  };
 
   return (
     <KeyboardAvoidingView
@@ -154,24 +135,24 @@ export default function CreateSentence({ route }) {
         <WordDetailModal
           visible={modalVisible}
           setVisible={setModalVisible}
-          word={trainingWords[wordIndex].word}
-          definition={trainingWords[wordIndex].translation}
+          word={{}}
+          definition={{}}
         />
       )}
       <TouchableWithoutFeedback onPress={handleKeyboardDismiss}>
         <FlatList
           ref={flatListRef}
-          data={chatHistory}
+          data={chatHistory.slice(1)}
           removeClippedSubviews={false}
-          renderItem={({ item }) => (
+          renderItem={({ item, index }) => (
             <Text
-              key={Math.random()}
+              key={index}
               selectable={true}
               style={
                 item.role === "user" ? styles.userMessage : styles.botMessage
               }
             >
-              {item.parts[0].text}
+              {item.parts[0].text ? item.parts[0].text : item.parts[0].result}
             </Text>
           )}
           keyExtractor={(item, index) => index.toString()}
@@ -182,17 +163,19 @@ export default function CreateSentence({ route }) {
           ListHeaderComponent={ListHeaderComponent}
         />
       </TouchableWithoutFeedback>
-      <Input
-        clearButtonMode="always"
-        inputContainerStyle={styles.input}
-        onChangeText={setInputText}
-        placeholder={"Ask me anything"}
-        value={inputText}
-        rightIcon={rightIcon}
-        onFocus={handleInputFocus}
-        leftIcon={leftIcon}
-        loading={loading}
-      />
+      {chatHistory.length > 0 && (
+        <Input
+          clearButtonMode="always"
+          inputContainerStyle={styles.input}
+          onChangeText={setInputText}
+          placeholder={"Ask me anything"}
+          value={inputText}
+          rightIcon={rightIcon}
+          onFocus={handleInputFocus}
+          leftIcon={leftIcon}
+          loading={loading}
+        />
+      )}
     </KeyboardAvoidingView>
   );
 }

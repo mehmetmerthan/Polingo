@@ -20,7 +20,7 @@ const HomeScreen = () => {
       const userId = await getUserId();
       const words = await getTrainingWords({ userId });
       if (words.length > 3) {
-        navigation.navigate("TrainingMaterialTop", { trainingWords: words });
+        navigation.navigate("CreateSentence", { trainingWords: words });
       } else {
         alert("You need to learn at least 5 words to create a sentence");
       }
@@ -65,7 +65,7 @@ const HomeScreen = () => {
         </Pressable>
         <Pressable
           style={styles.section}
-          onPress={() => navigation.navigate("Scenario")}
+          onPress={() => navigation.navigate("ScenarioStack")}
         >
           <Image
             source={require("../../../assets/web.png")}

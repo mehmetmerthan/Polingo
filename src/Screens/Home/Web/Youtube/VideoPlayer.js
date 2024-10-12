@@ -7,6 +7,7 @@ import {
   Pressable,
   Text,
 } from "react-native";
+import { Button } from "@rneui/themed";
 import YoutubePlayer from "react-native-youtube-iframe";
 import { getSubtitles } from "youtube-captions-scraper";
 import { WebView } from "react-native-webview";
@@ -17,6 +18,7 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { translateText } from "../../../../Utils/Service/translateService";
 import { addWord, searchWord } from "../../../../Utils/Service/wordService";
 import { getUserId } from "../../../../Utils/Service/authService";
+import WordDetailModal from "../../../../components/WordDetailModal";
 export default function VideoPlayer({ route }) {
   const { videoId } = route.params;
   const [captions, setCaptions] = useState([]);
@@ -27,6 +29,7 @@ export default function VideoPlayer({ route }) {
   const [isCaptionsLoading, setIsCaptionLoading] = useState(true);
   const playerRef = useRef(null);
   const [currentTime, setCurrentTime] = useState(0);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const [selectedWord, setSelectedWord] = useState("");
   const [translatedWord, setTranslatedWord] = useState("");
@@ -210,6 +213,14 @@ export default function VideoPlayer({ route }) {
               injectedJavaScript={injectScript}
               containerStyle={styles.webviewContainer}
             />
+            {modalVisible && selectedWord && translatedWord && (
+              <WordDetailModal
+                visible={modalVisible}
+                setVisible={setModalVisible}
+                word={selectedWord}
+                definition={translatedWord}
+              />
+            )}
           </View>
           {/* <></> */}
           {selectedWord ? (
@@ -244,18 +255,37 @@ export default function VideoPlayer({ route }) {
                     <Text style={styles.translatedText}>{translatedWord}</Text>
                     <Text style={styles.errorText}>{error}</Text>
                   </View>
-
-                  <TouchableOpacity
-                    style={styles.closeButton}
-                    onPress={() => {
-                      setSelectedWord("");
-                      setTranslatedWord("");
-                      setIsWordExist(false);
-                      setIsWordExistAlertVisible(false);
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
                     }}
                   >
-                    <MaterialIcons name="cancel" size={30} color="black" />
-                  </TouchableOpacity>
+                    <Button
+                      icon={{
+                        name: "info",
+                        color: "green",
+                        size: 30,
+                      }}
+                      buttonStyle={{
+                        backgroundColor: "#ffffff00",
+                      }}
+                      onPress={() => {
+                        setModalVisible(true);
+                      }}
+                    />
+                    <TouchableOpacity
+                      style={styles.closeButton}
+                      onPress={() => {
+                        setSelectedWord("");
+                        setTranslatedWord("");
+                        setIsWordExist(false);
+                        setIsWordExistAlertVisible(false);
+                      }}
+                    >
+                      <MaterialIcons name="cancel" size={30} color="black" />
+                    </TouchableOpacity>
+                  </View>
                 </>
               )}
             </View>

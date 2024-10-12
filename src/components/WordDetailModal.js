@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Dialog, Divider } from "@rneui/themed";
+import { Dialog, Divider, Button } from "@rneui/themed";
 import {
   View,
   Text,
   StyleSheet,
   FlatList,
   TouchableOpacity,
-  ScrollView,
   ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
@@ -109,7 +108,7 @@ export default function WordDetailModal({
         />
       )}
       <Dialog.Actions>
-        <Dialog.Button
+        <Button
           onPress={toggleDialog}
           title={"Close"}
           containerStyle={{ marginBottom: 20 }}
