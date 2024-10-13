@@ -1,8 +1,9 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import MaterialTopTab from "./MaterialTopTab";
-import HomeStack from "./HomeStack";
-import TranslateScreen from "../Screens/TranslateScreen";
+import DictioanryMaterialTop from "./MaterialTop/DictioanryMaterialTop";
+import HomeStack from "./Stack/HomeStack";
+import TranslateMaterialTop from "./MaterialTop/TranslateMaterialTop";
 import ProfileScreen from "../Screens/ProfileScreen";
+import AITranslate from "../Screens/Translate/AITranslate";
 const Tab = createBottomTabNavigator();
 
 export default function BottomTab() {
@@ -13,8 +14,8 @@ export default function BottomTab() {
         component={HomeStack}
         options={{ headerShown: false }}
       />
-      <Tab.Screen name="Dictinory" component={MaterialTopTab} />
-      <Tab.Screen name="Translate" component={TranslateScreen} />
+      <Tab.Screen name="Dictinory" component={DictioanryMaterialTop} />
+      <Tab.Screen name="Translate" component={TranslateMaterialTop} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );

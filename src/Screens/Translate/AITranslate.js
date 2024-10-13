@@ -9,8 +9,11 @@ import {
   ScrollView,
 } from "react-native";
 import { Input, Icon, Button, Divider } from "@rneui/themed";
-import { sendAIMessage, SendAITranslate } from "../Utils/Service/AIService/AITranslateService";
-export default function TranslateScreen() {
+import {
+  sendAIMessage,
+  SendAITranslate,
+} from "../../Utils/Service/AIService/AITranslateService";
+export default function AITranslate() {
   const [trainingText, setTrainingText] = useState("");
   const [mainText, setMainText] = useState("");
   const [change, setChange] = useState(true);

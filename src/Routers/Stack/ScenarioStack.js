@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
-import ScenarioList from "../Screens/Home/Scenario/ScenarioList";
-import ScenarioChat from "../Screens/Home/Scenario/ScenarioChat";
+import ScenarioList from "../../Screens/Home/Scenario/ScenarioList";
+import ScenarioChat from "../../Screens/Home/Scenario/ScenarioChat";
 const Stack = createNativeStackNavigator();
 export default function ScenarioStack() {
   return (

@@ -1,0 +1,15 @@
+- add translate to modal
+- add mark as leanred to traine
+- add scenario list to db and change code
+- add word count to dictionary
+- add video and site links and integrate to app
+- change AI service to hugging face
+- add api key saver, logout and words count to profile screen
+- chancge icons to webviews 
+- fix the list view problem on dictionary
+- add icons, chancge names and fix height to router 
+- add photo to home page
+- improve prompts
+- improve appereance
+- look around the app ui/ux
+- build

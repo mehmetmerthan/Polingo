@@ -1,7 +1,7 @@
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import React from "react";
 import ReadingWebView from "../../Screens/Home/Web/ReadingWebView";
-import YoutubeStack from "../YoutubeStack";
+import YoutubeStack from "../Stack/YoutubeStack";
 const Tab = createMaterialTopTabNavigator();
 
 export default function WebMaterialTop() {

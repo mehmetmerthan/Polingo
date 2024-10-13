@@ -79,11 +79,12 @@ export const changeWord = async (params) => {
 
 export const searchWord = async (params) => {
   const { userId, searchWord } = params;
+  const word = searchWord.toLowerCase();
   try {
     const variables = {
       filter: {
         userWordsId: { eq: userId },
-        word: { eq: searchWord },
+        word: { eq: word },
       },
     };
     const { data } = await client.graphql({ query: listWords, variables });

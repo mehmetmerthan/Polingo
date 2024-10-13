@@ -1,9 +1,9 @@
 import { translate } from "@vitalets/google-translate-api";
 
-export async function translateText({ text, setError }) {
+export async function translateText({ text, setError, translateTo = "tr" }) {
   try {
     const { text: translated } = await translate(text, {
-      to: "tr",
+      to: translateTo,
     });
     return translated;
   } catch (e) {

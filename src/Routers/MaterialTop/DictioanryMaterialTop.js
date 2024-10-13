@@ -1,12 +1,12 @@
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import WordsLearning from "../Screens/Dictionary/WordsLearning";
-import WordsLearned from "../Screens/Dictionary/WordsLearned";
-import { fetchWords } from "../Utils/Service/wordService";
-import { getUserId } from "../Utils/Service/authService";
+import WordsLearning from "../../Screens/Dictionary/WordsLearning";
+import WordsLearned from "../../Screens/Dictionary/WordsLearned";
+import { fetchWords } from "../../Utils/Service/wordService";
+import { getUserId } from "../../Utils/Service/authService";
 import React, { useState, useEffect } from "react";
 const Tab = createMaterialTopTabNavigator();
 
-export default function MaterialTopTab() {
+export default function DictioanryMaterialTop() {
   const [loading, setLoading] = useState(true);
   const [allWords, setAllWords] = useState([]);
   const [learningWordList, setLearningWordList] = useState([]);
@@ -32,9 +32,11 @@ export default function MaterialTopTab() {
     fetchData();
   }, []);
   return (
-    <Tab.Navigator screenOptions={{
-      swipeEnabled: false,
-    }}>
+    <Tab.Navigator
+      screenOptions={{
+        swipeEnabled: false,
+      }}
+    >
       <Tab.Screen
         name="Learn"
         children={() => (
