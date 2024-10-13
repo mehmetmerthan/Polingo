@@ -53,7 +53,7 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-polingo-staging-21c87-deployment/amplify-cfn-templates/auth/polingoaed73920-cloudformation-template.json",
         "logicalId": "authpolingoaed73920"
       },
-      "lastPushTimeStamp": "2024-10-05T13:16:05.507Z",
+      "lastPushTimeStamp": "2024-10-13T14:09:11.577Z",
       "output": {
         "UserPoolId": "us-east-1_Ym86meErc",
         "AppClientIDWeb": "10qa9cc4btgml4u74v1fjvorl5",
@@ -76,7 +76,9 @@
           "defaultAuthentication": {
             "authenticationType": "API_KEY",
             "apiKeyConfig": {
-              "apiKeyExpirationDays": 7
+              "apiKeyExpirationDays": 365,
+              "apiKeyExpirationDate": "2025-10-13T14:06:17.964Z",
+              "description": "polingoGrapfAPIKey"
             }
           },
           "additionalAuthenticationProviders": []
@@ -89,8 +91,8 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-polingo-staging-21c87-deployment/amplify-cfn-templates/api/cloudformation-template.json",
         "logicalId": "apipolingo"
       },
-      "lastPushTimeStamp": "2024-10-05T13:16:12.752Z",
-      "lastPushDirHash": "S+5KUtrKizaEL8DB5aMnL8qz0NU="
+      "lastPushTimeStamp": "2024-10-13T14:09:14.225Z",
+      "lastPushDirHash": "iR0kwNvbjI2XjCou304bMjRIJtE="
     }
   },
   "function": {
@@ -110,7 +112,7 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-polingo-staging-21c87-deployment/amplify-cfn-templates/function/polingoaed73920PostConfirmation-cloudformation-template.json",
         "logicalId": "functionpolingoaed73920PostConfirmation"
       },
-      "lastPushTimeStamp": "2024-10-05T13:16:05.534Z",
+      "lastPushTimeStamp": "2024-10-13T14:09:11.602Z",
       "output": {
         "LambdaExecutionRoleArn": "arn:aws:iam::607219595660:role/polingoaed73920PostConfirmation-staging",
         "Region": "us-east-1",
