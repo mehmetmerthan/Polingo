@@ -1,4 +1,4 @@
-- add translate to modal
+- add tts 
 - add mark as leanred to traine
 - add scenario list to db and change code
 - add word count to dictionary
