@@ -22,3 +22,11 @@ type Word @model {
     )
   createdAt: String!
 }
+
+type AIScenario @model {
+  id: ID!
+  title: String!
+  description: String!
+  firstMessage: String!
+  role: String!
+}

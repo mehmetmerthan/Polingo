@@ -14,6 +14,8 @@ export default function DictioanryMaterialTop() {
   const [slicedLearningWordList, setSlicedLearningWordList] = useState([]);
   const [slicedLearnedWordList, setSlicedLearnedWordList] = useState([]);
   const [userId, setUserId] = useState("");
+  const [learningWordsCount, setLearningWordsCount] = useState(0);
+  const [learnedWordsCount, setLearnedWordsCount] = useState(0);
   const fetchData = async () => {
     setLoading(true);
     const userId = await getUserId();
@@ -26,6 +28,8 @@ export default function DictioanryMaterialTop() {
     setSlicedLearningWordList(learningWords.slice(0, 20));
     setSlicedLearnedWordList(learnedWords.slice(0, 20));
     setAllWords(allWords);
+    setLearningWordsCount(learningWords.length);
+    setLearnedWordsCount(learnedWords.length);
     setLoading(false);
   };
   useEffect(() => {
@@ -38,7 +42,9 @@ export default function DictioanryMaterialTop() {
       }}
     >
       <Tab.Screen
-        name="Learn"
+        name={`Learn${
+          learningWordsCount > 0 ? ` (${learningWordsCount})` : ""
+        }`}
         children={() => (
           <WordsLearning
             loading={loading}
@@ -57,7 +63,9 @@ export default function DictioanryMaterialTop() {
         )}
       />
       <Tab.Screen
-        name="Learned"
+        name={`Learned${
+          learnedWordsCount > 0 ? ` (${learnedWordsCount})` : ""
+        }`}
         children={() => (
           <WordsLearned
             loading={loading}

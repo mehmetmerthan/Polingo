@@ -109,3 +109,54 @@ export const deleteWord = /* GraphQL */ `
     }
   }
 `;
+export const createAIScenario = /* GraphQL */ `
+  mutation CreateAIScenario(
+    $input: CreateAIScenarioInput!
+    $condition: ModelAIScenarioConditionInput
+  ) {
+    createAIScenario(input: $input, condition: $condition) {
+      id
+      title
+      description
+      firstMessage
+      role
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const updateAIScenario = /* GraphQL */ `
+  mutation UpdateAIScenario(
+    $input: UpdateAIScenarioInput!
+    $condition: ModelAIScenarioConditionInput
+  ) {
+    updateAIScenario(input: $input, condition: $condition) {
+      id
+      title
+      description
+      firstMessage
+      role
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const deleteAIScenario = /* GraphQL */ `
+  mutation DeleteAIScenario(
+    $input: DeleteAIScenarioInput!
+    $condition: ModelAIScenarioConditionInput
+  ) {
+    deleteAIScenario(input: $input, condition: $condition) {
+      id
+      title
+      description
+      firstMessage
+      role
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;

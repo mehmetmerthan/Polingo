@@ -15,11 +15,7 @@ export default function HomeStack() {
       />
       <Stack.Screen name="WebMaterialTop" component={WebMaterialTop} />
       <Stack.Screen name="CreateSentence" component={CreateSentence} />
-      <Stack.Screen
-        name="ScenarioStack"
-        component={ScenarioStack}
-        options={{ headerShown: false }}
-      />
+      <Stack.Screen name="ScenarioStack" component={ScenarioStack} />
     </Stack.Navigator>
   );
 }

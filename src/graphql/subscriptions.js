@@ -91,3 +91,51 @@ export const onDeleteWord = /* GraphQL */ `
     }
   }
 `;
+export const onCreateAIScenario = /* GraphQL */ `
+  subscription OnCreateAIScenario(
+    $filter: ModelSubscriptionAIScenarioFilterInput
+  ) {
+    onCreateAIScenario(filter: $filter) {
+      id
+      title
+      description
+      firstMessage
+      role
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onUpdateAIScenario = /* GraphQL */ `
+  subscription OnUpdateAIScenario(
+    $filter: ModelSubscriptionAIScenarioFilterInput
+  ) {
+    onUpdateAIScenario(filter: $filter) {
+      id
+      title
+      description
+      firstMessage
+      role
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onDeleteAIScenario = /* GraphQL */ `
+  subscription OnDeleteAIScenario(
+    $filter: ModelSubscriptionAIScenarioFilterInput
+  ) {
+    onDeleteAIScenario(filter: $filter) {
+      id
+      title
+      description
+      firstMessage
+      role
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;

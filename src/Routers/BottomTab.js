@@ -3,7 +3,6 @@ import DictioanryMaterialTop from "./MaterialTop/DictioanryMaterialTop";
 import HomeStack from "./Stack/HomeStack";
 import TranslateMaterialTop from "./MaterialTop/TranslateMaterialTop";
 import ProfileScreen from "../Screens/ProfileScreen";
-import AITranslate from "../Screens/Translate/AITranslate";
 const Tab = createBottomTabNavigator();
 
 export default function BottomTab() {

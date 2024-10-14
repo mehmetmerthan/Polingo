@@ -17,6 +17,16 @@ type Word {
   userWordsId: ID
 }
 
+type AIScenario {
+  id: ID!
+  title: String!
+  description: String!
+  firstMessage: String!
+  role: String!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
 input ModelStringInput {
   ne: String
   eq: String
@@ -187,6 +197,8 @@ type Query {
   listUsers(filter: ModelUserFilterInput, limit: Int, nextToken: String): ModelUserConnection
   getWord(id: ID!): Word
   listWords(filter: ModelWordFilterInput, limit: Int, nextToken: String): ModelWordConnection
+  getAIScenario(id: ID!): AIScenario
+  listAIScenarios(filter: ModelAIScenarioFilterInput, limit: Int, nextToken: String): ModelAIScenarioConnection
   wordByDate(type: String!, createdAt: ModelStringKeyConditionInput, sortDirection: ModelSortDirection, filter: ModelWordFilterInput, limit: Int, nextToken: String): ModelWordConnection
 }
 
@@ -220,6 +232,9 @@ type Mutation {
   createWord(input: CreateWordInput!, condition: ModelWordConditionInput): Word
   updateWord(input: UpdateWordInput!, condition: ModelWordConditionInput): Word
   deleteWord(input: DeleteWordInput!, condition: ModelWordConditionInput): Word
+  createAIScenario(input: CreateAIScenarioInput!, condition: ModelAIScenarioConditionInput): AIScenario
+  updateAIScenario(input: UpdateAIScenarioInput!, condition: ModelAIScenarioConditionInput): AIScenario
+  deleteAIScenario(input: DeleteAIScenarioInput!, condition: ModelAIScenarioConditionInput): AIScenario
 }
 
 input ModelSubscriptionUserFilterInput {
@@ -239,6 +254,9 @@ type Subscription {
   onCreateWord(filter: ModelSubscriptionWordFilterInput): Word @aws_subscribe(mutations: ["createWord"])
   onUpdateWord(filter: ModelSubscriptionWordFilterInput): Word @aws_subscribe(mutations: ["updateWord"])
   onDeleteWord(filter: ModelSubscriptionWordFilterInput): Word @aws_subscribe(mutations: ["deleteWord"])
+  onCreateAIScenario(filter: ModelSubscriptionAIScenarioFilterInput): AIScenario @aws_subscribe(mutations: ["createAIScenario"])
+  onUpdateAIScenario(filter: ModelSubscriptionAIScenarioFilterInput): AIScenario @aws_subscribe(mutations: ["updateAIScenario"])
+  onDeleteAIScenario(filter: ModelSubscriptionAIScenarioFilterInput): AIScenario @aws_subscribe(mutations: ["deleteAIScenario"])
 }
 
 type ModelWordConnection {
@@ -307,6 +325,68 @@ input ModelSubscriptionWordFilterInput {
   updatedAt: ModelSubscriptionStringInput
   and: [ModelSubscriptionWordFilterInput]
   or: [ModelSubscriptionWordFilterInput]
+}
+
+type ModelAIScenarioConnection {
+  items: [AIScenario]!
+  nextToken: String
+}
+
+input ModelAIScenarioFilterInput {
+  id: ModelIDInput
+  title: ModelStringInput
+  description: ModelStringInput
+  firstMessage: ModelStringInput
+  role: ModelStringInput
+  createdAt: ModelStringInput
+  updatedAt: ModelStringInput
+  and: [ModelAIScenarioFilterInput]
+  or: [ModelAIScenarioFilterInput]
+  not: ModelAIScenarioFilterInput
+}
+
+input ModelAIScenarioConditionInput {
+  title: ModelStringInput
+  description: ModelStringInput
+  firstMessage: ModelStringInput
+  role: ModelStringInput
+  and: [ModelAIScenarioConditionInput]
+  or: [ModelAIScenarioConditionInput]
+  not: ModelAIScenarioConditionInput
+  createdAt: ModelStringInput
+  updatedAt: ModelStringInput
+}
+
+input CreateAIScenarioInput {
+  id: ID
+  title: String!
+  description: String!
+  firstMessage: String!
+  role: String!
+}
+
+input UpdateAIScenarioInput {
+  id: ID!
+  title: String
+  description: String
+  firstMessage: String
+  role: String
+}
+
+input DeleteAIScenarioInput {
+  id: ID!
+}
+
+input ModelSubscriptionAIScenarioFilterInput {
+  id: ModelSubscriptionIDInput
+  title: ModelSubscriptionStringInput
+  description: ModelSubscriptionStringInput
+  firstMessage: ModelSubscriptionStringInput
+  role: ModelSubscriptionStringInput
+  createdAt: ModelSubscriptionStringInput
+  updatedAt: ModelSubscriptionStringInput
+  and: [ModelSubscriptionAIScenarioFilterInput]
+  or: [ModelSubscriptionAIScenarioFilterInput]
 }
 
 input ModelStringKeyConditionInput {

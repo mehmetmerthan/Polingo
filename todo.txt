@@ -1,10 +1,8 @@
-- add scenario list to db and change code
-- add word count to dictionary
-- change AI service to hugging face
 - add video and site links and integrate to app
-- chancge icons to webviews 
+- chancge icons to webviews
 - fix the list view problem on dictionary
-- add icons, chancge names and fix height to router 
+- add icons, chancge names
+- change AI service to hugging face
 - add photo to home page
 - improve prompts
 - add api key saver, logout and words count to profile screen
