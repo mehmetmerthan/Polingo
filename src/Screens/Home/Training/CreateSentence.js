@@ -9,6 +9,7 @@ import {
   Keyboard,
   Pressable,
   View,
+  ActivityIndicator,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Input, Icon, Button } from "@rneui/themed";
@@ -18,14 +19,43 @@ import {
   SendFirst,
 } from "../../../Utils/Service/AIService/AICreateService";
 import WordDetailModal from "../../../components/WordDetailModal";
-export default function CreateSentence({ route }) {
-  const { trainingWords } = route.params;
+import {
+  getTrainingWords,
+  changeWord,
+} from "../../../Utils/Service/wordService";
+import { getUserId } from "../../../Utils/Service/authService";
+export default function CreateSentence() {
   const [chatHistory, setChatHistory] = useState([]);
   const [inputText, setInputText] = useState("");
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [wordIndex, setWordIndex] = useState(0);
+  const [loadingChange, setLoadingChange] = useState(false);
+  const [isShow, setIsShow] = useState(false);
+  const [loadingState, setLoadingState] = useState(false);
+  const [trainingWords, setTrainingWords] = useState([]);
   const flatListRef = useRef(null);
+  async function fetchTrainingWords() {
+    setLoadingState(true);
+    try {
+      const userId = await getUserId();
+      const words = await getTrainingWords({ userId });
+      if (words.length > 4) {
+        setIsShow(true);
+        const slicedWords = words.slice(0, 5);
+        setTrainingWords(slicedWords);
+      } else {
+        setIsShow(false);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    setLoadingState(false);
+  }
+  useEffect(() => {
+    fetchTrainingWords();
+  }, []);
+
   const sendMessage = async () => {
     if (!inputText || loading) {
       return;
@@ -112,36 +142,76 @@ export default function CreateSentence({ route }) {
       <Icon name="delete" size={20} color="#2089dc" />
     </Pressable>
   );
+  async function handleChange() {
+    setLoadingChange(true);
+    setLoading(true);
+    try {
+      await Promise.all(
+        trainingWords.map(async (word) => {
+          await changeWord({ wordId: word.id, isLearned: true });
+        })
+      );
 
-  const ListHeaderComponent = () => (
-    <Text style={styles.botMessage}>
-      Create sentence from your vocabulary words:{"\n"}
-      {" \n"}
-      <View style={{ flexDirection: "column" }}>
-        {trainingWords?.map((word, index) => (
-          <View style={styles.wordContainer} key={index}>
-            <Text key={index} style={styles.word}>
-              {word.word}: {word.translation}
-              {"\n"}
-            </Text>
-            <Button
-              icon={{
-                name: "info",
-                color: "#2089dc",
-                size: 20,
-                style: styles.icon,
-              }}
-              onPress={() => {
-                setWordIndex(index);
-                setModalVisible(true);
-              }}
-              color={"transparent"}
-            />
-          </View>
-        ))}
-      </View>
-    </Text>
-  );
+      await fetchTrainingWords();
+    } catch (error) {
+      console.error(error);
+    }
+    setLoadingChange(false);
+    setLoading(false);
+  }
+
+  const ListHeaderComponent = () => {
+    return (
+      <>
+        {loadingState ? (
+          <ActivityIndicator size={"large"} />
+        ) : (
+          <>
+            {!isShow ? (
+              <Text style={styles.botMessage}>
+                You need at least 5 words in your vocabulary to start training.
+              </Text>
+            ) : (
+              <Text style={styles.botMessage}>
+                Create sentence from your vocabulary words:{"\n"}
+                {" \n"}
+                <View style={{ flexDirection: "column" }}>
+                  {trainingWords?.map((word, index) => (
+                    <View style={styles.wordContainer} key={index}>
+                      <Text key={index} style={styles.word}>
+                        {word.word}: {word.translation}
+                        {"\n"}
+                      </Text>
+                      <Button
+                        icon={{
+                          name: "info",
+                          color: "#2089dc",
+                          size: 20,
+                          style: styles.icon,
+                        }}
+                        onPress={() => {
+                          setWordIndex(index);
+                          setModalVisible(true);
+                        }}
+                        color={"transparent"}
+                      />
+                    </View>
+                  ))}
+                  <Button
+                    title={"Mark as learned"}
+                    containerStyle={styles.markButton}
+                    onPress={handleChange}
+                    loading={loadingChange}
+                    disabled={loadingChange}
+                  />
+                </View>
+              </Text>
+            )}
+          </>
+        )}
+      </>
+    );
+  };
 
   return (
     <KeyboardAvoidingView
@@ -192,6 +262,7 @@ export default function CreateSentence({ route }) {
         onFocus={handleInputFocus}
         leftIcon={leftIcon}
         loading={loading}
+        disabled={loading || !isShow}
       />
     </KeyboardAvoidingView>
   );
@@ -238,5 +309,10 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginLeft: 50,
+  },
+  markButton: {
+    borderRadius: 10,
+    alignSelf: "flex-start",
+    alignItems: "flex-start",
   },
 });

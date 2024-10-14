@@ -100,8 +100,7 @@ export const getTrainingWords = async (params) => {
   try {
     const variables = {
       type: "word",
-      sortDirection: "DESC",
-      limit: 5,
+      sortDirection: "ASC",
       filter: {
         userWordsId: { eq: userId },
         isLearned: { eq: false },

@@ -1,34 +1,9 @@
-import { React, useState } from "react";
-import {
-  Image,
-  StyleSheet,
-  Pressable,
-  ScrollView,
-  Text,
-  ActivityIndicator,
-} from "react-native";
+import { React } from "react";
+import { Image, StyleSheet, Pressable, ScrollView, Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { getTrainingWords } from "../../Utils/Service/wordService";
-import { getUserId } from "../../Utils/Service/authService";
 const HomeScreen = () => {
-  const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
-  async function navigateToCreateSentence() {
-    setLoading(true);
-    try {
-      const userId = await getUserId();
-      const words = await getTrainingWords({ userId });
-      if (words.length > 3) {
-        navigation.navigate("CreateSentence", { trainingWords: words });
-      } else {
-        alert("You need to learn at least 5 words to create a sentence");
-      }
-    } catch (error) {
-      console.error(error);
-    }
-    setLoading(false);
-  }
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
@@ -45,17 +20,14 @@ const HomeScreen = () => {
             <Text style={styles.overlayDescription}>Explore web resources</Text>
           </Text>
         </Pressable>
-        <Pressable style={styles.section} onPress={navigateToCreateSentence}>
+        <Pressable
+          style={styles.section}
+          onPress={() => navigation.navigate("CreateSentence")}
+        >
           <Image
             source={require("../../../assets/web.png")}
             style={styles.image}
           />
-          {loading && (
-            <ActivityIndicator
-              size={"large"}
-              style={{ position: "absolute" }}
-            />
-          )}
           <Text style={styles.overlayText}>
             Traine {"\n"}
             <Text style={styles.overlayDescription}>

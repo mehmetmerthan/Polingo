@@ -5,11 +5,10 @@ import {
   Text,
   StyleSheet,
   FlatList,
-  TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import { translateText } from "../Utils/Service/translateService";
+import * as Speech from "expo-speech";
 export default function WordDetailModal({
   word,
   definition,
@@ -18,6 +17,9 @@ export default function WordDetailModal({
 }) {
   const [wordData, setWordData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [translations, setTranslations] = useState({});
+  const [loadingTranslations, setLoadingTranslations] = useState({});
+  const [loadingSound, setLoadingSound] = useState({});
   function toggleDialog() {
     setVisible(!visible);
   }
@@ -39,12 +41,21 @@ export default function WordDetailModal({
   useEffect(() => {
     fetchData();
   }, [word]);
-  const playSound = (text) => {
-    console.log("Ses çalınamıyor", `Ses oynatılıyor: ${text}`);
+  const playSound = (text, exampleKey) => {
+    if (loadingSound[exampleKey]) return;
+    setLoadingSound((prev) => ({ ...prev, [exampleKey]: true }));
+    Speech.speak(text, {
+      onDone: () => {
+        setLoadingSound((prev) => ({ ...prev, [exampleKey]: false }));
+      },
+      onStopped: () => {
+        setLoadingSound((prev) => ({ ...prev, [exampleKey]: false }));
+      },
+      onError: () => {
+        setLoadingSound((prev) => ({ ...prev, [exampleKey]: false }));
+      },
+    });
   };
-  const [translations, setTranslations] = useState({});
-
-  const [loadingTranslations, setLoadingTranslations] = useState({});
 
   const handleTranslate = async (text, key) => {
     if (translations[key]) return;
@@ -78,16 +89,15 @@ export default function WordDetailModal({
               loading={loadingTranslations[definitionKey]}
               color={"transparent"}
               loadingStyle={{
-                backgroundColor: "#000000",
                 borderRadius: 50,
-                width: 25,
-                height: 25,
               }}
             />
           </View>
-          <Text style={styles.definitionTranslation}>
-            {translations[definitionKey] || ""}
-          </Text>
+          {translations[definitionKey] && (
+            <Text style={styles.definitionTranslation}>
+              {translations[definitionKey]}
+            </Text>
+          )}
         </View>
         {item?.definitions[0]?.example && (
           <>
@@ -109,22 +119,30 @@ export default function WordDetailModal({
                   loading={loadingTranslations[exampleKey]}
                   color={"transparent"}
                   loadingStyle={{
-                    backgroundColor: "#000000",
                     borderRadius: 50,
-                    width: 25,
-                    height: 25,
                   }}
                 />
               </View>
-              <Text style={styles.definitionTranslation}>
-                {translations[exampleKey] || ""}
-              </Text>
+              {translations[exampleKey] && (
+                <Text style={styles.definitionTranslation}>
+                  {translations[exampleKey]}
+                </Text>
+              )}
             </View>
-            <TouchableOpacity
-              onPress={() => playSound(item.definitions[0].example)}
-            >
-              <Ionicons name="play-circle-outline" size={30} color="black" />
-            </TouchableOpacity>
+            <Button
+              icon={{
+                name: "play-circle-outline",
+                color: "black",
+                size: 30,
+              }}
+              onPress={() => playSound(item.definitions[0].example, exampleKey)}
+              disabled={loadingSound[exampleKey]}
+              loading={loadingSound[exampleKey]}
+              color={"transparent"}
+              loadingStyle={{
+                borderRadius: 50,
+              }}
+            />
             <Divider style={{ marginTop: 5 }} />
           </>
         )}
@@ -144,13 +162,20 @@ export default function WordDetailModal({
             <>
               <View style={styles.wordContainer}>
                 <Text style={styles.word}>{word}</Text>
-                <TouchableOpacity onPress={() => playSound(wordData.word)}>
-                  <Ionicons
-                    name="play-circle-outline"
-                    size={30}
-                    color="black"
-                  />
-                </TouchableOpacity>
+                <Button
+                  icon={{
+                    name: "play-circle-outline",
+                    color: "black",
+                    size: 30,
+                  }}
+                  onPress={() => playSound(wordData.word, "word")}
+                  disabled={loadingSound["word"]}
+                  loading={loadingSound["word"]}
+                  color={"transparent"}
+                  loadingStyle={{
+                    borderRadius: 50,
+                  }}
+                />
               </View>
               <Text style={styles.meaning}>{definition}</Text>
               <Divider width={1} />

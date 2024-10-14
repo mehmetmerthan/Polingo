@@ -5,6 +5,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import styles from "../../styles/wordsStyles";
 import { removeWord, changeWord } from "../../Utils/Service/wordService";
 import WordDetailModal from "../../components/WordDetailModal";
+import * as Speech from "expo-speech";
 export const WordListLearning = ({
   item,
   index,
@@ -18,6 +19,7 @@ export const WordListLearning = ({
   const [loadingDelete, setLoadingDelete] = useState(false);
   const [loadingChange, setLoadingChange] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [loadingSound, setLoadingSound] = useState(false);
   const [status, setStatus] = useState(item.isLearned);
   const handleDelete = async () => {
     try {
@@ -66,7 +68,19 @@ export const WordListLearning = ({
     }
   };
   async function playSound(text) {
-    console.log("Ses çalınamıyor", `Ses oynatılıyor: ${text}`);
+    if (loadingSound) return;
+    setLoadingSound(true);
+    Speech.speak(text, {
+      onDone: () => {
+        setLoadingSound(false);
+      },
+      onStopped: () => {
+        setLoadingSound(false);
+      },
+      onError: () => {
+        setLoadingSound(false);
+      },
+    });
   }
   return (
     <ListItem.Swipeable
@@ -127,9 +141,20 @@ export const WordListLearning = ({
           <Text style={styles.englishText}>{item.word}</Text>
           <Text style={styles.turkishText}>{item.translation}</Text>
         </View>
-        <TouchableOpacity style={styles.playIcon} onPress={playSound}>
-          <AntDesign name="playcircleo" size={24} color="black" />
-        </TouchableOpacity>
+        <Button
+          icon={{
+            name: "play-circle-outline",
+            color: "black",
+            size: 30,
+          }}
+          onPress={() => playSound(item.word)}
+          disabled={loadingSound}
+          loading={loadingSound}
+          color={"transparent"}
+          loadingStyle={{
+            borderRadius: 50,
+          }}
+        />
       </ListItem.Content>
       {modalVisible && (
         <WordDetailModal
