@@ -11,7 +11,7 @@ export default function Dev() {
       description:
         "Simple English stories for different levels, with audio and transcripts.",
       image:
-        "https://cdn.iconscout.com/icon/free/png-512/free-british-council-logo-brand-download-svg-png-gif-flat-icon-logos-world-brand-logos-vol-1-pack-british-logo-icon-282315.png?f=webp&w=256",
+        "https://yt3.googleusercontent.com/6pw8YF3c0ZGAYzPfEe6ZoUO0yxoa5_ymOSB1_-dkgvS1WWWM3PmRwHV_JK6dLdpJzypGnh3qeQ=s160-c-k-c0x00ffffff-no-rj",
     },
 
     {

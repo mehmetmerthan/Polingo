@@ -1,6 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
-import YouTubeWebView from "../../Screens/Home/WebSources/Youtube/YoutubeWebView";
+import YoutubeWebView from "../../Screens/Home/WebSources/Youtube/YoutubeWebView";
 import VideoPlayer from "../../Screens/Home/WebSources/Youtube/VideoPlayer";
 import YoutubeList from "../../Screens/Home/WebSources/Youtube/YoutubeList";
 const Stack = createNativeStackNavigator();
@@ -13,8 +13,8 @@ export default function YoutubeStack() {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="YouTubeWebView"
-        component={YouTubeWebView}
+        name="YoutubeWebView"
+        component={YoutubeWebView}
         options={{ headerShown: false }}
       />
       <Stack.Screen

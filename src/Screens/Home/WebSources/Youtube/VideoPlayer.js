@@ -29,7 +29,6 @@ export default function VideoPlayer({ route }) {
   const [isPlaying, setIsPlaying] = useState(true);
   const [isCaptionsLoading, setIsCaptionLoading] = useState(true);
   const playerRef = useRef(null);
-  const [currentTime, setCurrentTime] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalGlishVisible, setModalGlishVisible] = useState(false);
   const [selectedWord, setSelectedWord] = useState("");
@@ -79,18 +78,13 @@ export default function VideoPlayer({ route }) {
     const interval = setInterval(() => {
       if (isPlaying && playerRef.current) {
         playerRef.current.getCurrentTime().then((time) => {
-          setCurrentTime(time);
           handleProgress(time);
         });
       }
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [isPlaying, captions]); // captions'ı bağımlılıklara ekleyin
-
-  const handleCaptionClick = (time) => {
-    playerRef.current.seekTo(time);
-  };
+  }, [isPlaying, captions]);
 
   const togglePlayPause = () => {
     setIsPlaying((prev) => !prev);
@@ -100,7 +94,6 @@ export default function VideoPlayer({ route }) {
     const interval = setInterval(() => {
       if (isPlaying && playerRef.current) {
         playerRef.current.getCurrentTime().then((time) => {
-          setCurrentTime(time);
           handleProgress(time);
         });
       }
@@ -132,17 +125,17 @@ export default function VideoPlayer({ route }) {
         margin: 0 20px;
       }
       .previous {
-        font-size: 36px;
+        font-size: 50px;
         opacity: 0.7;
         cursor: pointer;
-        margin-bottom: 80px;
+        margin-bottom: 20px;
         margin-left: 60px;    
       }
       .next {
-        font-size: 36px;
+        font-size: 50px;
         opacity: 0.7;
         cursor: pointer;
-        margin-top: 80px;
+        margin-top: 20px;
         margin-left: 60px;      }
     </style>
   </head>
@@ -396,6 +389,3 @@ const styles = StyleSheet.create({
     fontWeight: "200",
   },
 });
-
-// export default function VideoPlayer({ route }) {
-//   const { videoId } = route.params;

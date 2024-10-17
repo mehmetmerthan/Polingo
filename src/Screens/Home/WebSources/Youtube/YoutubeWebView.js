@@ -3,7 +3,8 @@ import { View } from "react-native";
 import { WebView } from "react-native-webview";
 import { useNavigation } from "@react-navigation/native";
 
-export default function YouTubeWebView() {
+export default function YoutubeWebView({ route }) {
+  const { url } = route.params;
   const webviewRef = useRef(null);
   const navigation = useNavigation();
 
@@ -26,7 +27,7 @@ export default function YouTubeWebView() {
     <View style={{ flex: 1 }}>
       <WebView
         ref={webviewRef}
-        source={{ uri: "https://www.youtube.com/" }}
+        source={{ uri: url }}
         onNavigationStateChange={onNavigationStateChange}
       />
     </View>

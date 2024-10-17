@@ -1,4 +1,3 @@
-- add video and site links and integrate to app
 - chancge icons to webviews
 - fix the list view problem on dictionary
 - add icons, chancge names
