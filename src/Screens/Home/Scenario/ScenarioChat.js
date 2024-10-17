@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import { Input, Icon, Button } from "@rneui/themed";
 import { useHeaderHeight } from "@react-navigation/elements";
-import WordDetailModal from "../../../components/WordDetailModal";
 import {
   SendFirst,
   sendAIMessage,
@@ -131,14 +130,6 @@ export default function ScenarioChat({ route }) {
       keyboardVerticalOffset={height}
       enabled
     >
-      {modalVisible && (
-        <WordDetailModal
-          visible={modalVisible}
-          setVisible={setModalVisible}
-          word={{}}
-          definition={{}}
-        />
-      )}
       <TouchableWithoutFeedback onPress={handleKeyboardDismiss}>
         <FlatList
           ref={flatListRef}

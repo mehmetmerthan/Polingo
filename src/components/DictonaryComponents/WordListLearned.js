@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text } from "react-native";
 import { ListItem, Button } from "@rneui/themed";
-import AntDesign from "@expo/vector-icons/AntDesign";
 import styles from "../../styles/wordsStyles";
 import { removeWord, changeWord } from "../../Utils/Service/wordService";
 import WordDetailModal from "../../components/WordDetailModal";
+import GlishModal from "../GlishModal";
+import * as Speech from "expo-speech";
+
 export const WordListLearned = ({
   item,
   index,
@@ -18,6 +20,8 @@ export const WordListLearned = ({
   const [loadingDelete, setLoadingDelete] = useState(false);
   const [loadingChange, setLoadingChange] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalGlishVisible, setModalGlishVisible] = useState(false);
+  const [loadingSound, setLoadingSound] = useState(false);
   const [status, setStatus] = useState(item.isLearned);
   const handleDelete = async () => {
     try {
@@ -66,7 +70,19 @@ export const WordListLearned = ({
     }
   };
   async function playSound(text) {
-    console.log("Ses çalınamıyor", `Ses oynatılıyor: ${text}`);
+    if (loadingSound) return;
+    setLoadingSound(true);
+    Speech.speak(text, {
+      onDone: () => {
+        setLoadingSound(false);
+      },
+      onStopped: () => {
+        setLoadingSound(false);
+      },
+      onError: () => {
+        setLoadingSound(false);
+      },
+    });
   }
   return (
     <ListItem.Swipeable
@@ -127,16 +143,46 @@ export const WordListLearned = ({
           <Text style={styles.englishText}>{item.word}</Text>
           <Text style={styles.turkishText}>{item.translation}</Text>
         </View>
-        <TouchableOpacity style={styles.playIcon}>
-          <AntDesign name="playcircleo" size={24} color="black" />
-        </TouchableOpacity>
+        <Button
+          icon={{
+            name: "youtube",
+            type: "feather",
+            size: 35,
+          }}
+          buttonStyle={{
+            backgroundColor: "#ffffff00",
+          }}
+          onPress={() => {
+            setModalGlishVisible(true);
+          }}
+        />
+        <Button
+          icon={{
+            name: "play-circle-outline",
+            color: "black",
+            size: 30,
+          }}
+          onPress={() => playSound(item.word)}
+          disabled={loadingSound}
+          loading={loadingSound}
+          color={"transparent"}
+          loadingStyle={{
+            borderRadius: 50,
+          }}
+        />
       </ListItem.Content>
       {modalVisible && (
         <WordDetailModal
           visible={modalVisible}
           setVisible={setModalVisible}
           word={item.word}
-          definition={item.translation}
+        />
+      )}
+      {modalGlishVisible && (
+        <GlishModal
+          visible={modalGlishVisible}
+          setVisible={setModalGlishVisible}
+          word={item.word}
         />
       )}
     </ListItem.Swipeable>

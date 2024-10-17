@@ -225,7 +225,6 @@ export default function CreateSentence() {
           visible={modalVisible}
           setVisible={setModalVisible}
           word={trainingWords[wordIndex].word}
-          definition={trainingWords[wordIndex].translation}
         />
       )}
       <TouchableWithoutFeedback onPress={handleKeyboardDismiss}>

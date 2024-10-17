@@ -160,3 +160,105 @@ export const deleteAIScenario = /* GraphQL */ `
     }
   }
 `;
+export const createWebsite = /* GraphQL */ `
+  mutation CreateWebsite(
+    $input: CreateWebsiteInput!
+    $condition: ModelWebsiteConditionInput
+  ) {
+    createWebsite(input: $input, condition: $condition) {
+      id
+      title
+      url
+      description
+      image
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const updateWebsite = /* GraphQL */ `
+  mutation UpdateWebsite(
+    $input: UpdateWebsiteInput!
+    $condition: ModelWebsiteConditionInput
+  ) {
+    updateWebsite(input: $input, condition: $condition) {
+      id
+      title
+      url
+      description
+      image
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const deleteWebsite = /* GraphQL */ `
+  mutation DeleteWebsite(
+    $input: DeleteWebsiteInput!
+    $condition: ModelWebsiteConditionInput
+  ) {
+    deleteWebsite(input: $input, condition: $condition) {
+      id
+      title
+      url
+      description
+      image
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const createYoutube = /* GraphQL */ `
+  mutation CreateYoutube(
+    $input: CreateYoutubeInput!
+    $condition: ModelYoutubeConditionInput
+  ) {
+    createYoutube(input: $input, condition: $condition) {
+      id
+      title
+      url
+      description
+      image
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const updateYoutube = /* GraphQL */ `
+  mutation UpdateYoutube(
+    $input: UpdateYoutubeInput!
+    $condition: ModelYoutubeConditionInput
+  ) {
+    updateYoutube(input: $input, condition: $condition) {
+      id
+      title
+      url
+      description
+      image
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const deleteYoutube = /* GraphQL */ `
+  mutation DeleteYoutube(
+    $input: DeleteYoutubeInput!
+    $condition: ModelYoutubeConditionInput
+  ) {
+    deleteYoutube(input: $input, condition: $condition) {
+      id
+      title
+      url
+      description
+      image
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;

@@ -27,6 +27,26 @@ type AIScenario {
   updatedAt: AWSDateTime!
 }
 
+type Website {
+  id: ID!
+  title: String!
+  url: String!
+  description: String!
+  image: String
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type Youtube {
+  id: ID!
+  title: String!
+  url: String!
+  description: String!
+  image: String
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
 input ModelStringInput {
   ne: String
   eq: String
@@ -199,6 +219,10 @@ type Query {
   listWords(filter: ModelWordFilterInput, limit: Int, nextToken: String): ModelWordConnection
   getAIScenario(id: ID!): AIScenario
   listAIScenarios(filter: ModelAIScenarioFilterInput, limit: Int, nextToken: String): ModelAIScenarioConnection
+  getWebsite(id: ID!): Website
+  listWebsites(filter: ModelWebsiteFilterInput, limit: Int, nextToken: String): ModelWebsiteConnection
+  getYoutube(id: ID!): Youtube
+  listYoutubes(filter: ModelYoutubeFilterInput, limit: Int, nextToken: String): ModelYoutubeConnection
   wordByDate(type: String!, createdAt: ModelStringKeyConditionInput, sortDirection: ModelSortDirection, filter: ModelWordFilterInput, limit: Int, nextToken: String): ModelWordConnection
 }
 
@@ -235,6 +259,12 @@ type Mutation {
   createAIScenario(input: CreateAIScenarioInput!, condition: ModelAIScenarioConditionInput): AIScenario
   updateAIScenario(input: UpdateAIScenarioInput!, condition: ModelAIScenarioConditionInput): AIScenario
   deleteAIScenario(input: DeleteAIScenarioInput!, condition: ModelAIScenarioConditionInput): AIScenario
+  createWebsite(input: CreateWebsiteInput!, condition: ModelWebsiteConditionInput): Website
+  updateWebsite(input: UpdateWebsiteInput!, condition: ModelWebsiteConditionInput): Website
+  deleteWebsite(input: DeleteWebsiteInput!, condition: ModelWebsiteConditionInput): Website
+  createYoutube(input: CreateYoutubeInput!, condition: ModelYoutubeConditionInput): Youtube
+  updateYoutube(input: UpdateYoutubeInput!, condition: ModelYoutubeConditionInput): Youtube
+  deleteYoutube(input: DeleteYoutubeInput!, condition: ModelYoutubeConditionInput): Youtube
 }
 
 input ModelSubscriptionUserFilterInput {
@@ -257,6 +287,12 @@ type Subscription {
   onCreateAIScenario(filter: ModelSubscriptionAIScenarioFilterInput): AIScenario @aws_subscribe(mutations: ["createAIScenario"])
   onUpdateAIScenario(filter: ModelSubscriptionAIScenarioFilterInput): AIScenario @aws_subscribe(mutations: ["updateAIScenario"])
   onDeleteAIScenario(filter: ModelSubscriptionAIScenarioFilterInput): AIScenario @aws_subscribe(mutations: ["deleteAIScenario"])
+  onCreateWebsite(filter: ModelSubscriptionWebsiteFilterInput): Website @aws_subscribe(mutations: ["createWebsite"])
+  onUpdateWebsite(filter: ModelSubscriptionWebsiteFilterInput): Website @aws_subscribe(mutations: ["updateWebsite"])
+  onDeleteWebsite(filter: ModelSubscriptionWebsiteFilterInput): Website @aws_subscribe(mutations: ["deleteWebsite"])
+  onCreateYoutube(filter: ModelSubscriptionYoutubeFilterInput): Youtube @aws_subscribe(mutations: ["createYoutube"])
+  onUpdateYoutube(filter: ModelSubscriptionYoutubeFilterInput): Youtube @aws_subscribe(mutations: ["updateYoutube"])
+  onDeleteYoutube(filter: ModelSubscriptionYoutubeFilterInput): Youtube @aws_subscribe(mutations: ["deleteYoutube"])
 }
 
 type ModelWordConnection {
@@ -387,6 +423,130 @@ input ModelSubscriptionAIScenarioFilterInput {
   updatedAt: ModelSubscriptionStringInput
   and: [ModelSubscriptionAIScenarioFilterInput]
   or: [ModelSubscriptionAIScenarioFilterInput]
+}
+
+type ModelWebsiteConnection {
+  items: [Website]!
+  nextToken: String
+}
+
+input ModelWebsiteFilterInput {
+  id: ModelIDInput
+  title: ModelStringInput
+  url: ModelStringInput
+  description: ModelStringInput
+  image: ModelStringInput
+  createdAt: ModelStringInput
+  updatedAt: ModelStringInput
+  and: [ModelWebsiteFilterInput]
+  or: [ModelWebsiteFilterInput]
+  not: ModelWebsiteFilterInput
+}
+
+input ModelWebsiteConditionInput {
+  title: ModelStringInput
+  url: ModelStringInput
+  description: ModelStringInput
+  image: ModelStringInput
+  and: [ModelWebsiteConditionInput]
+  or: [ModelWebsiteConditionInput]
+  not: ModelWebsiteConditionInput
+  createdAt: ModelStringInput
+  updatedAt: ModelStringInput
+}
+
+input CreateWebsiteInput {
+  id: ID
+  title: String!
+  url: String!
+  description: String!
+  image: String
+}
+
+input UpdateWebsiteInput {
+  id: ID!
+  title: String
+  url: String
+  description: String
+  image: String
+}
+
+input DeleteWebsiteInput {
+  id: ID!
+}
+
+input ModelSubscriptionWebsiteFilterInput {
+  id: ModelSubscriptionIDInput
+  title: ModelSubscriptionStringInput
+  url: ModelSubscriptionStringInput
+  description: ModelSubscriptionStringInput
+  image: ModelSubscriptionStringInput
+  createdAt: ModelSubscriptionStringInput
+  updatedAt: ModelSubscriptionStringInput
+  and: [ModelSubscriptionWebsiteFilterInput]
+  or: [ModelSubscriptionWebsiteFilterInput]
+}
+
+type ModelYoutubeConnection {
+  items: [Youtube]!
+  nextToken: String
+}
+
+input ModelYoutubeFilterInput {
+  id: ModelIDInput
+  title: ModelStringInput
+  url: ModelStringInput
+  description: ModelStringInput
+  image: ModelStringInput
+  createdAt: ModelStringInput
+  updatedAt: ModelStringInput
+  and: [ModelYoutubeFilterInput]
+  or: [ModelYoutubeFilterInput]
+  not: ModelYoutubeFilterInput
+}
+
+input ModelYoutubeConditionInput {
+  title: ModelStringInput
+  url: ModelStringInput
+  description: ModelStringInput
+  image: ModelStringInput
+  and: [ModelYoutubeConditionInput]
+  or: [ModelYoutubeConditionInput]
+  not: ModelYoutubeConditionInput
+  createdAt: ModelStringInput
+  updatedAt: ModelStringInput
+}
+
+input CreateYoutubeInput {
+  id: ID
+  title: String!
+  url: String!
+  description: String!
+  image: String
+}
+
+input UpdateYoutubeInput {
+  id: ID!
+  title: String
+  url: String
+  description: String
+  image: String
+}
+
+input DeleteYoutubeInput {
+  id: ID!
+}
+
+input ModelSubscriptionYoutubeFilterInput {
+  id: ModelSubscriptionIDInput
+  title: ModelSubscriptionStringInput
+  url: ModelSubscriptionStringInput
+  description: ModelSubscriptionStringInput
+  image: ModelSubscriptionStringInput
+  createdAt: ModelSubscriptionStringInput
+  updatedAt: ModelSubscriptionStringInput
+  and: [ModelSubscriptionYoutubeFilterInput]
+  or: [ModelSubscriptionYoutubeFilterInput]
 }
 
 input ModelStringKeyConditionInput {

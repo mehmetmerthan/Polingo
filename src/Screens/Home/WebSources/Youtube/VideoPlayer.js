@@ -19,6 +19,7 @@ import { translateText } from "../../../../Utils/Service/translateService";
 import { addWord, searchWord } from "../../../../Utils/Service/wordService";
 import { getUserId } from "../../../../Utils/Service/authService";
 import WordDetailModal from "../../../../components/WordDetailModal";
+import GlishModal from "../../../../components/GlishModal";
 export default function VideoPlayer({ route }) {
   const { videoId } = route.params;
   const [captions, setCaptions] = useState([]);
@@ -30,7 +31,7 @@ export default function VideoPlayer({ route }) {
   const playerRef = useRef(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
-
+  const [modalGlishVisible, setModalGlishVisible] = useState(false);
   const [selectedWord, setSelectedWord] = useState("");
   const [translatedWord, setTranslatedWord] = useState("");
   const [loading, setLoading] = useState(true);
@@ -218,7 +219,13 @@ export default function VideoPlayer({ route }) {
                 visible={modalVisible}
                 setVisible={setModalVisible}
                 word={selectedWord}
-                definition={translatedWord}
+              />
+            )}
+            {modalGlishVisible && selectedWord && (
+              <GlishModal
+                visible={modalGlishVisible}
+                setVisible={setModalGlishVisible}
+                word={selectedWord}
               />
             )}
           </View>
@@ -261,6 +268,19 @@ export default function VideoPlayer({ route }) {
                       alignItems: "center",
                     }}
                   >
+                    <Button
+                      icon={{
+                        name: "youtube",
+                        type: "feather",
+                        size: 35,
+                      }}
+                      buttonStyle={{
+                        backgroundColor: "#ffffff00",
+                      }}
+                      onPress={() => {
+                        setModalGlishVisible(true);
+                      }}
+                    />
                     <Button
                       icon={{
                         name: "info",

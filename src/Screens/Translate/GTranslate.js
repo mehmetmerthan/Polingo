@@ -138,7 +138,6 @@ export default function AITranslate() {
             setVisible={setModalVisible}
             visible={modalVisible}
             word={translateTo === "tr" ? text : translatedText}
-            definition={translateTo === "tr" ? translatedText : text}
           />
         )}
       </View>

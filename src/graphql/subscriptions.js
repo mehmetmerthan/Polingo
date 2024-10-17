@@ -139,3 +139,87 @@ export const onDeleteAIScenario = /* GraphQL */ `
     }
   }
 `;
+export const onCreateWebsite = /* GraphQL */ `
+  subscription OnCreateWebsite($filter: ModelSubscriptionWebsiteFilterInput) {
+    onCreateWebsite(filter: $filter) {
+      id
+      title
+      url
+      description
+      image
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onUpdateWebsite = /* GraphQL */ `
+  subscription OnUpdateWebsite($filter: ModelSubscriptionWebsiteFilterInput) {
+    onUpdateWebsite(filter: $filter) {
+      id
+      title
+      url
+      description
+      image
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onDeleteWebsite = /* GraphQL */ `
+  subscription OnDeleteWebsite($filter: ModelSubscriptionWebsiteFilterInput) {
+    onDeleteWebsite(filter: $filter) {
+      id
+      title
+      url
+      description
+      image
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onCreateYoutube = /* GraphQL */ `
+  subscription OnCreateYoutube($filter: ModelSubscriptionYoutubeFilterInput) {
+    onCreateYoutube(filter: $filter) {
+      id
+      title
+      url
+      description
+      image
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onUpdateYoutube = /* GraphQL */ `
+  subscription OnUpdateYoutube($filter: ModelSubscriptionYoutubeFilterInput) {
+    onUpdateYoutube(filter: $filter) {
+      id
+      title
+      url
+      description
+      image
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onDeleteYoutube = /* GraphQL */ `
+  subscription OnDeleteYoutube($filter: ModelSubscriptionYoutubeFilterInput) {
+    onDeleteYoutube(filter: $filter) {
+      id
+      title
+      url
+      description
+      image
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;

@@ -1,4 +1,3 @@
-// src/styles/dictionaryStyles.js
 import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
@@ -25,7 +24,7 @@ export default StyleSheet.create({
     alignItems: "center",
   },
   wordTextContainer: {
-    flexDirection: "row",
+    flexDirection: "column",
     alignItems: "center",
     flex: 1,
   },

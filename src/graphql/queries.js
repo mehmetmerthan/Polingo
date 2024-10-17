@@ -109,6 +109,78 @@ export const listAIScenarios = /* GraphQL */ `
     }
   }
 `;
+export const getWebsite = /* GraphQL */ `
+  query GetWebsite($id: ID!) {
+    getWebsite(id: $id) {
+      id
+      title
+      url
+      description
+      image
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const listWebsites = /* GraphQL */ `
+  query ListWebsites(
+    $filter: ModelWebsiteFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listWebsites(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        title
+        url
+        description
+        image
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const getYoutube = /* GraphQL */ `
+  query GetYoutube($id: ID!) {
+    getYoutube(id: $id) {
+      id
+      title
+      url
+      description
+      image
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const listYoutubes = /* GraphQL */ `
+  query ListYoutubes(
+    $filter: ModelYoutubeFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listYoutubes(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        title
+        url
+        description
+        image
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
 export const wordByDate = /* GraphQL */ `
   query WordByDate(
     $type: String!

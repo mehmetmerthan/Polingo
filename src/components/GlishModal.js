@@ -2,17 +2,17 @@ import React from "react";
 import { Dialog, Button } from "@rneui/themed";
 import { View, StyleSheet } from "react-native";
 import WebView from "react-native-webview";
-export default function WordDetailModal({ word, setVisible, visible }) {
+export default function GlishModal({ word, setVisible, visible }) {
   function toggleDialog() {
     setVisible(!visible);
   }
-  const formattedSentence = word.replace(/ /g, "+");
+  const formattedSentence = word.replace(/ /g, "%20");
   return (
     <Dialog isVisible={visible} overlayStyle={styles.dialog}>
       <View style={styles.webviewContainer}>
         <WebView
           source={{
-            uri: `https://tatoeba.org/en/sentences/search?from=eng&query=${formattedSentence}&to=tur`,
+            uri: `https://youglish.com/pronounce/${formattedSentence}/english`,
           }}
           style={styles.webview}
         />
@@ -31,7 +31,7 @@ export default function WordDetailModal({ word, setVisible, visible }) {
 const styles = StyleSheet.create({
   dialog: {
     width: "90%",
-    height: "80%",
+    height: "90%",
   },
   webviewContainer: {
     flex: 1,

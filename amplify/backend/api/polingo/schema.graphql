@@ -30,3 +30,19 @@ type AIScenario @model {
   firstMessage: String!
   role: String!
 }
+
+type Website @model {
+  id: ID!
+  title: String!
+  url: String!
+  description: String!
+  image: String
+}
+
+type Youtube @model {
+  id: ID!
+  title: String!
+  url: String!
+  description: String!
+  image: String
+}

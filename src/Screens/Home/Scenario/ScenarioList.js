@@ -22,45 +22,6 @@ const ScenarioList = () => {
   useEffect(() => {
     fetchData();
   }, []);
-  // const conversationScenarios = [
-  //   {
-  //     id: 1,
-  //     title: "Ordering at a Café",
-  //     description: "Learn how to order food and drinks at a café.",
-  //     firstMessage: "Good afternoon! What can I get for you today?",
-  //     role: "waiter",
-  //   },
-
-  //   {
-  //     id: 2,
-  //     title: "Booking a Hotel Room",
-  //     description: "Practice booking a room at a hotel.",
-  //     firstMessage: "How many nights will you be staying with us?",
-  //     role: "receptionist",
-  //   },
-  //   {
-  //     id: 3,
-  //     title: "Job Interview",
-  //     description: "Prepare for an English job interview.",
-  //     firstMessage: "Tell me about yourself and your work experience.",
-  //     role: "interviewer",
-  //   },
-  //   {
-  //     id: 4,
-  //     title: "Visiting a Doctor",
-  //     description:
-  //       "Learn how to explain symptoms and ask for help at a clinic.",
-  //     firstMessage: "What seems to be the problem?",
-  //     role: "doctor",
-  //   },
-  //   {
-  //     id: 5,
-  //     title: "At the Airport",
-  //     description: "Practice speaking at an airport check-in counter.",
-  //     firstMessage: "Can I see your passport and ticket, please?",
-  //     role: "agent",
-  //   },
-  // ];
 
   const handleScenarioPress = ({ role, firstMessage }) => {
     navigation.navigate("ScenarioChat", { role, firstMessage });

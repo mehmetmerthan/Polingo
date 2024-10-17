@@ -5,7 +5,9 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import styles from "../../styles/wordsStyles";
 import { removeWord, changeWord } from "../../Utils/Service/wordService";
 import WordDetailModal from "../../components/WordDetailModal";
+import GlishModal from "../GlishModal";
 import * as Speech from "expo-speech";
+
 export const WordListLearning = ({
   item,
   index,
@@ -19,6 +21,7 @@ export const WordListLearning = ({
   const [loadingDelete, setLoadingDelete] = useState(false);
   const [loadingChange, setLoadingChange] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalGlishVisible, setModalGlishVisible] = useState(false);
   const [loadingSound, setLoadingSound] = useState(false);
   const [status, setStatus] = useState(item.isLearned);
   const handleDelete = async () => {
@@ -143,6 +146,19 @@ export const WordListLearning = ({
         </View>
         <Button
           icon={{
+            name: "youtube",
+            type: "feather",
+            size: 35,
+          }}
+          buttonStyle={{
+            backgroundColor: "#ffffff00",
+          }}
+          onPress={() => {
+            setModalGlishVisible(true);
+          }}
+        />
+        <Button
+          icon={{
             name: "play-circle-outline",
             color: "black",
             size: 30,
@@ -161,7 +177,13 @@ export const WordListLearning = ({
           visible={modalVisible}
           setVisible={setModalVisible}
           word={item.word}
-          definition={item.translation}
+        />
+      )}
+      {modalGlishVisible && (
+        <GlishModal
+          visible={modalGlishVisible}
+          setVisible={setModalGlishVisible}
+          word={item.word}
         />
       )}
     </ListItem.Swipeable>

@@ -10,11 +10,13 @@ import { WebView } from "react-native-webview";
 import { Button } from "@rneui/themed";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { translateText } from "../../../Utils/Service/translateService";
-import { addWord, searchWord } from "../../../Utils/Service/wordService";
-import { getUserId } from "../../../Utils/Service/authService";
-import WordDetailModal from "../../../components/WordDetailModal";
-export default function ReadingWebView() {
+import { translateText } from "../../../../Utils/Service/translateService";
+import { addWord, searchWord } from "../../../../Utils/Service/wordService";
+import { getUserId } from "../../../../Utils/Service/authService";
+import WordDetailModal from "../../../../components/WordDetailModal";
+import GlishModal from "../../../../components/GlishModal";
+export default function WebsiteWebView({ route }) {
+  const { url } = route.params;
   const [selectedWord, setSelectedWord] = useState("");
   const [translatedWord, setTranslatedWord] = useState("");
   const [loading, setLoading] = useState(true);
@@ -23,6 +25,7 @@ export default function ReadingWebView() {
   const [loadingAddWord, setLoadingAddWord] = useState(false);
   const [error, setError] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalGlishVisible, setModalGlishVisible] = useState(false);
   const webViewRef = useRef(null);
 
   const injectScript = `
@@ -74,6 +77,22 @@ export default function ReadingWebView() {
       currentMenu = null;
     }
   });
+  const removeAdsAndPopups = () => {
+    if (currentMenu) return;
+    const iframes = document.querySelectorAll('iframe');
+    iframes.forEach(iframe => {
+      iframe.style.display = 'none';
+    });
+    const divs = document.querySelectorAll('div');
+    divs.forEach(div => {
+      if (div.style.position === 'fixed' || div.style.position === 'absolute') {
+        div.style.display = 'none';
+      }
+    });
+  };
+  document.addEventListener('DOMContentLoaded', removeAdsAndPopups);
+  setInterval(removeAdsAndPopups, 1000); // Her saniye kontrol et
+  true; 
 `;
 
   async function onMessage(event) {
@@ -120,7 +139,7 @@ export default function ReadingWebView() {
         ref={webViewRef}
         originWhitelist={["*"]}
         source={{
-          uri: "https://www.cbsnews.com/news/tropical-storm-milton-forms-gulf-of-mexico-florida/",
+          uri: url,
         }}
         onMessage={onMessage}
         containerStyle={styles.webviewContainer}
@@ -131,7 +150,13 @@ export default function ReadingWebView() {
           visible={modalVisible}
           setVisible={setModalVisible}
           word={selectedWord}
-          definition={translatedWord}
+        />
+      )}
+      {modalGlishVisible && selectedWord && (
+        <GlishModal
+          visible={modalGlishVisible}
+          setVisible={setModalGlishVisible}
+          word={selectedWord}
         />
       )}
       {selectedWord ? (
@@ -172,6 +197,19 @@ export default function ReadingWebView() {
                   alignItems: "center",
                 }}
               >
+                <Button
+                  icon={{
+                    name: "youtube",
+                    type: "feather",
+                    size: 35,
+                  }}
+                  buttonStyle={{
+                    backgroundColor: "#ffffff00",
+                  }}
+                  onPress={() => {
+                    setModalGlishVisible(true);
+                  }}
+                />
                 <Button
                   icon={{
                     name: "info",
