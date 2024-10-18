@@ -1,110 +1,228 @@
-import { React } from "react";
-import { Image, StyleSheet, Pressable, ScrollView, Text } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import React from "react";
+import { View, Text, ScrollView, StyleSheet } from "react-native";
+import { FontAwesome, AntDesign } from "@expo/vector-icons";
+import { Button, Card, ListItem } from "@rneui/themed";
+import { DefaultTheme } from "@react-navigation/native";
+
 const HomeScreen = () => {
-  const navigation = useNavigation();
+  const wordsOfTheDay = [
+    { word: "Benevolent", meaning: "İyi niyetli" },
+    { word: "Courage", meaning: "Cesaret" },
+    { word: "Persevere", meaning: "Azmetmek" },
+    { word: "Exemplary", meaning: "Örnek niteliğinde" },
+    { word: "Resilient", meaning: "Dayanıklı" },
+  ];
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView>
-        <Pressable
-          style={styles.section}
-          onPress={() => navigation.navigate("WebMaterialTop")}
-        >
-          <Image
-            source={require("../../../assets/web.png")}
-            style={styles.image}
-          />
-          <Text style={styles.overlayText}>
-            Web{"\n"}
-            <Text style={styles.overlayDescription}>Explore web resources</Text>
-          </Text>
-        </Pressable>
-        <Pressable
-          style={styles.section}
-          onPress={() => navigation.navigate("CreateSentence")}
-        >
-          <Image
-            source={require("../../../assets/web.png")}
-            style={styles.image}
-          />
-          <Text style={styles.overlayText}>
-            Traine {"\n"}
-            <Text style={styles.overlayDescription}>
-              Create sentence from your vocabulary
-            </Text>
-          </Text>
-        </Pressable>
-        <Pressable
-          style={styles.section}
-          onPress={() => navigation.navigate("ScenarioStack")}
-        >
-          <Image
-            source={require("../../../assets/web.png")}
-            style={styles.image}
-          />
-          <Text style={styles.overlayText}>
-            Scenario {"\n"}
-            <Text style={styles.overlayDescription}>
-              Practice real-life situations
-            </Text>
-          </Text>
-        </Pressable>
-      </ScrollView>
-    </SafeAreaView>
+    <ScrollView style={styles.container}>
+      <Card containerStyle={styles.cardContainer}>
+        <Card.Title style={styles.cartTitle}>Words of the Day</Card.Title>
+        <Card.Divider />
+        <View style={styles.listItemContainer}>
+          {wordsOfTheDay.map((item, index) => (
+            <ListItem
+              key={index}
+              bottomDivider
+              containerStyle={styles.listItem}
+            >
+              <Button
+                icon={{
+                  name: "plus",
+                  type: "font-awesome",
+                  size: 24,
+                  color: "#4CAF50",
+                }}
+                buttonStyle={styles.buttonStyle}
+              />
+              <ListItem.Content>
+                <ListItem.Title style={styles.listItemTitle}>
+                  {item.word}
+                </ListItem.Title>
+                <ListItem.Subtitle style={styles.listItemSubtitle}>
+                  {item.meaning}
+                </ListItem.Subtitle>
+              </ListItem.Content>
+              <FontAwesome
+                name="info"
+                size={20}
+                color={DefaultTheme.colors.primary}
+              />
+              <FontAwesome
+                name="youtube-play"
+                size={20}
+                color={DefaultTheme.colors.primary}
+              />
+              <FontAwesome
+                name="volume-up"
+                size={20}
+                color={DefaultTheme.colors.primary}
+              />
+            </ListItem>
+          ))}
+        </View>
+      </Card>
+
+      <Card containerStyle={styles.cardContainer}>
+        <Card.Title style={styles.cartTitle}>
+          Do you know this word ?
+        </Card.Title>
+        <Card.Divider />
+        <View style={styles.listItemContainer}>
+          <View style={styles.oxfordWordsContainer}>
+            <Text style={styles.oxfordWord}>Evelotion</Text>
+            <Text style={styles.oxfordMeaning}>Evrim</Text>
+          </View>
+          <View style={styles.oxfordButtonContainer}>
+            <Button
+              icon={{
+                name: "check",
+                type: "font-awesome",
+                size: 30,
+                color: "#4CAF50",
+              }}
+              buttonStyle={styles.buttonStyle}
+            />
+            <Button
+              icon={{
+                name: "close",
+                type: "font-awesome",
+                size: 30,
+                color: "#F44336",
+              }}
+              buttonStyle={styles.buttonStyle}
+            />
+          </View>
+        </View>
+      </Card>
+      <Card containerStyle={styles.cardContainer}>
+        <Card.Title style={styles.cartTitle}>
+          Do you remember the words?
+        </Card.Title>
+        <Card.Divider />
+        <View style={styles.listItemContainer}>
+          {wordsOfTheDay.map((item, index) => (
+            <ListItem
+              key={index}
+              bottomDivider
+              containerStyle={styles.listItem}
+            >
+              <ListItem.Content>
+                <ListItem.Title style={styles.listItemTitle}>
+                  {item.word}
+                </ListItem.Title>
+                <ListItem.Subtitle style={styles.listItemSubtitle}>
+                  {item.meaning}
+                </ListItem.Subtitle>
+              </ListItem.Content>
+              <AntDesign name="checkcircle" size={24} color="green" />
+              <AntDesign name="closecircle" size={24} color="red" />
+            </ListItem>
+          ))}
+        </View>
+      </Card>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "column",
+    backgroundColor: "#f2f2f2",
   },
-  row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+  cardContainer: {
     marginBottom: 10,
-  },
-  section: {
-    flex: 1,
-    height: 250,
-    width: "100%",
-    marginHorizontal: 5,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  image: {
-    width: "100%",
-    height: "100%",
-    resizeMode: "cover",
-  },
-  overlayText: {
-    position: "absolute",
-    top: "70%",
-    justifyContent: "center",
-    alignItems: "center",
-    alignContent: "center",
-    alignSelf: "center",
-    fontSize: 25,
-    fontWeight: "bold",
-    textAlign: "center",
-    textTransform: "uppercase",
-    color: "white",
-    letterSpacing: 1,
-    borderWidth: 1,
-    borderColor: "#000000",
     borderRadius: 10,
-    backgroundColor: "rgba(0, 0, 0, 1)",
+  },
+  cartTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  listItemContainer: {
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: DefaultTheme.colors.border,
     padding: 5,
+    //backgroundColor: "#242424",
   },
-  overlayDescription: {
-    fontSize: 14,
-    fontWeight: "300",
-    color: "#ffffff",
-    textAlign: "center",
+  listItem: {},
+  listItemTitle: {},
+  listItemSubtitle: {},
+  readingListitemContainer: {
+    flex: 1,
   },
-  activityIndicator: {
-    position: "absolute",
+  oxfordWordsContainer: {
+    flexDirection: "column",
+    alignItems: "center",
+    alignSelf: "center",
+    borderWidth: 1,
+    borderColor: DefaultTheme.colors.border,
+    borderRadius: 10,
+    padding: 10,
+    backgroundColor: DefaultTheme.colors.card,
+    marginTop: 10,
+  },
+  oxfordWord: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  oxfordMeaning: {
+    fontSize: 18,
+  },
+  oxfordButtonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    marginTop: 30,
+  },
+  buttonStyle: {
+    backgroundColor: DefaultTheme.colors.border,
+    borderRadius: 10,
   },
 });
 
 export default HomeScreen;
+
+// const styles = StyleSheet.create({
+//   container: {
+//     backgroundColor: "#f2f2f2",
+//   },
+//   cardContainer: {
+//     marginBottom: 10,
+//     borderRadius: 10,
+//   },
+//   listItemContainer: {
+//     borderRadius: 10,
+//     borderWidth: 1,
+//     borderColor: "#ccc",
+//     padding: 5,
+//   },
+//   readingListitemContainer: {
+//     flex: 1,
+//   },
+//   oxfordWordsContainer: {
+//     flexDirection: "column",
+//     alignItems: "center",
+//     alignSelf: "center",
+//     borderWidth: 1,
+//     borderColor: "#ccc",
+//     borderRadius: 10,
+//     padding: 10,
+//     backgroundColor: "#f2f2f2",
+//     marginTop: 10,
+//   },
+//   oxfordWord: {
+//     fontSize: 20,
+//     fontWeight: "bold",
+//   },
+//   oxfordMeaning: {
+//     fontSize: 18,
+//   },
+//   oxfordButtonContainer: {
+//     flexDirection: "row",
+//     justifyContent: "space-around",
+//     alignItems: "center",
+//     marginTop: 30,
+//   },
+//   buttonStyle: {
+//     backgroundColor: "#f2f2f2",
+//     borderRadius: 10,
+//     padding: 10,
+//   },

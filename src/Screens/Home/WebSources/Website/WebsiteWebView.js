@@ -132,8 +132,28 @@ export default function WebsiteWebView({ route }) {
   return (
     <View style={styles.container}>
       <View style={styles.buttonsContainer}>
-        <Button title={"Back"} onPress={handleBack} />
-        <Button title={"OnRefresh"} onPress={handleOnRefresh} />
+        <Button
+          onPress={handleBack}
+          icon={{
+            name: "chevron-back-circle",
+            type: "ionicon",
+            size: 40,
+          }}
+          buttonStyle={{
+            backgroundColor: "#ffffff00",
+          }}
+        />
+        <Button
+          onPress={handleOnRefresh}
+          icon={{
+            name: "refresh-circle",
+            type: "ionicon",
+            size: 40,
+          }}
+          buttonStyle={{
+            backgroundColor: "#ffffff00",
+          }}
+        />
       </View>
       <WebView
         ref={webViewRef}
@@ -250,7 +270,6 @@ const styles = StyleSheet.create({
   buttonsContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    padding: 10,
   },
   wordContainer: {
     position: "absolute",

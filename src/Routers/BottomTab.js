@@ -1,21 +1,51 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import DictioanryMaterialTop from "./MaterialTop/DictioanryMaterialTop";
-import HomeStack from "./Stack/HomeStack";
+import DrawerNav from "./DrawerNav";
 import TranslateMaterialTop from "./MaterialTop/TranslateMaterialTop";
 import ProfileScreen from "../Screens/ProfileScreen";
+import Ionicons from "@expo/vector-icons/Ionicons";
 const Tab = createBottomTabNavigator();
 
 export default function BottomTab() {
   return (
     <Tab.Navigator>
       <Tab.Screen
-        name="Home"
-        component={HomeStack}
-        options={{ headerShown: false }}
+        name="DrawerNav"
+        component={DrawerNav}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="home" color={color} size={size} />
+          ),
+        }}
       />
-      <Tab.Screen name="Dictinory" component={DictioanryMaterialTop} />
-      <Tab.Screen name="Translate" component={TranslateMaterialTop} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen
+        name="Dictinory"
+        component={DictioanryMaterialTop}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="book" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Translate"
+        component={TranslateMaterialTop}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="language" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="person" color={color} size={size} />
+          ),
+        }}
+      />
     </Tab.Navigator>
   );
 }
