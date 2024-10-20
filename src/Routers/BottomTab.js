@@ -17,6 +17,7 @@ export default function BottomTab() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home" color={color} size={size} />
           ),
+          tabBarLabel: "Home",
         }}
       />
       <Tab.Screen

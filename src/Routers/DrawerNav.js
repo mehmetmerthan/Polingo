@@ -10,11 +10,41 @@ const Drawer = createDrawerNavigator();
 export default function DrawerNav() {
   return (
     <Drawer.Navigator>
-      <Drawer.Screen name="HomeScreen" component={HomeScreen} />
-      <Drawer.Screen name="WebsiteStack" component={WebsiteStack} />
-      <Drawer.Screen name="YoutubeStack" component={YoutubeStack} />
-      <Drawer.Screen name="CreateSentence" component={CreateSentence} />
-      <Drawer.Screen name="ScenarioStack" component={ScenarioStack} />
+      <Drawer.Screen
+        name="HomeScreen"
+        component={HomeScreen}
+        options={{
+          title: "Home",
+        }}
+      />
+      <Drawer.Screen
+        name="WebsiteStack"
+        component={WebsiteStack}
+        options={{
+          title: "Reading List",
+        }}
+      />
+      <Drawer.Screen
+        name="YoutubeStack"
+        component={YoutubeStack}
+        options={{
+          title: "Video List",
+        }}
+      />
+      <Drawer.Screen
+        name="CreateSentence"
+        component={CreateSentence}
+        options={{
+          title: "Training Words",
+        }}
+      />
+      <Drawer.Screen
+        name="ScenarioStack"
+        component={ScenarioStack}
+        options={{
+          title: "Scenarios",
+        }}
+      />
     </Drawer.Navigator>
   );
 }

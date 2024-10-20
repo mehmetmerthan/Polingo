@@ -10,8 +10,16 @@ export default function TranslateMaterialTop() {
         swipeEnabled: false,
       }}
     >
-      <Tab.Screen name="AITranslate" component={AITranslate} />
-      <Tab.Screen name="GTranslate" component={GTranslate} />
+      <Tab.Screen
+        name="GTranslate"
+        component={GTranslate}
+        options={{ title: "Google Translate" }}
+      />
+      <Tab.Screen
+        name="AITranslate"
+        component={AITranslate}
+        options={{ title: "AI Translate" }}
+      />
     </Tab.Navigator>
   );
 }

@@ -37,6 +37,10 @@ export const addWord = async (params) => {
     translation: translation,
     type: "word",
   };
+  const checkWord = await searchWord({ userId, searchWord: word });
+  if (checkWord.length > 0) {
+    return;
+  }
   try {
     const { data } = await client.graphql({
       query: createWord,
