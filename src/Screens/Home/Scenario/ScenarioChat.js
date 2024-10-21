@@ -21,7 +21,6 @@ export default function ScenarioChat({ route }) {
   const [chatHistory, setChatHistory] = useState([]);
   const [inputText, setInputText] = useState("");
   const [loading, setLoading] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
   const flatListRef = useRef(null);
   const sendMessage = async () => {
     if (!inputText || loading) {
@@ -29,14 +28,12 @@ export default function ScenarioChat({ route }) {
     }
     setLoading(true);
     try {
-      const userMessage = { role: "user", parts: [{ text: inputText }] };
+      const userMessage = { role: "user", content: inputText };
       setChatHistory((prev) => [...prev, userMessage]);
       const result = await sendAIMessage({
-        input: inputText,
         chatHistory,
-        role,
       });
-      const botMessage = { role: "model", parts: [{ text: result }] };
+      const botMessage = { role: "assistant", content: result };
       setChatHistory((prev) => [...prev, botMessage]);
     } catch (error) {
       console.error(error);
@@ -57,7 +54,6 @@ export default function ScenarioChat({ route }) {
     if (flatListRef.current) {
       flatListRef.current.scrollToEnd({ animated: true });
     }
-    //console.log(JSON.stringify(chatHistory, null, 2));
   }, [chatHistory]);
 
   const scrollToEnd = () => {
@@ -104,7 +100,7 @@ export default function ScenarioChat({ route }) {
         firstMessage,
         role,
       });
-      const modelMessage = { role: "model", parts: [{ text: result }] };
+      const modelMessage = { role: "assistant", content: result };
       setChatHistory((prev) => [...prev, modelMessage]);
     } catch (error) {
       console.error(error);
@@ -143,7 +139,7 @@ export default function ScenarioChat({ route }) {
                 item.role === "user" ? styles.userMessage : styles.botMessage
               }
             >
-              {item.parts[0].text ? item.parts[0].text : item.parts[0].result}
+              {item.content && item.content}
             </Text>
           )}
           keyExtractor={(item, index) => index.toString()}

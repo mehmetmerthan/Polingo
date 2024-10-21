@@ -8,7 +8,7 @@ import { translateText } from "../../Utils/Service/translateService";
 export const AddWordForm = ({
   setIsAddFormVisible,
   userId,
-  setLoading,
+  setLoadingState,
   fetchData,
   allWords,
 }) => {
@@ -28,7 +28,7 @@ export const AddWordForm = ({
 
       return;
     }
-    setLoading(true);
+    setLoadingState(true);
     setLoadingButton(true);
     const result = await addWord({
       userId,
@@ -39,7 +39,7 @@ export const AddWordForm = ({
     if (result) {
       await fetchData();
       setIsAddFormVisible(false);
-      setLoading(false);
+      setLoadingState(false);
       setLoadingButton(false);
     }
   };

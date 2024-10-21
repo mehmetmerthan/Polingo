@@ -1,5 +1,3 @@
-- change AI service to hugging face
-- improve prompts
 - add api key saver, logout and words count to profile screen
 - improve appereance
 - look around the app ui/ux

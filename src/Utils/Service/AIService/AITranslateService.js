@@ -3,15 +3,15 @@ import {
   HarmCategory,
   HarmBlockThreshold,
 } from "@google/generative-ai";
-import { API_KEY } from "../../../../constants";
+import { GEMINI_API_KEY } from "../../../../constants";
 
-const model_name = "gemini-1.5-pro";
-const genAI = new GoogleGenerativeAI(API_KEY);
+const model_name = "gemini-1.5-flash";
+const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 const generationConfig = {
-  maxOutputTokens: 2000,
-  temperature: 0.5,
-  topP: 0.9,
-  topK: 50,
+  maxOutputTokens: 300,
+  temperature: 1.8,
+  topP: 0.95,
+  topK: 64,
 };
 const safetySettings = [
   {

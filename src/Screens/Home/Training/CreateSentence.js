@@ -11,7 +11,6 @@ import {
   View,
   ActivityIndicator,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Input, Icon, Button } from "@rneui/themed";
 import { useHeaderHeight } from "@react-navigation/elements";
 import {
@@ -24,9 +23,11 @@ import {
   changeWord,
 } from "../../../Utils/Service/wordService";
 import { getUserId } from "../../../Utils/Service/authService";
+import Markdown from "react-native-markdown-display";
 export default function CreateSentence() {
   const [chatHistory, setChatHistory] = useState([]);
   const [inputText, setInputText] = useState("");
+  const [firstInput, setFirstInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [wordIndex, setWordIndex] = useState(0);
@@ -40,9 +41,9 @@ export default function CreateSentence() {
     try {
       const userId = await getUserId();
       const words = await getTrainingWords({ userId });
-      if (words.length > 4) {
+      if (words.length > 2) {
         setIsShow(true);
-        const slicedWords = words.slice(0, 5);
+        const slicedWords = words.slice(0, 3);
         setTrainingWords(slicedWords);
       } else {
         setIsShow(false);
@@ -63,42 +64,38 @@ export default function CreateSentence() {
     setLoading(true);
     if (chatHistory.length === 0) {
       try {
+        setFirstInput(inputText);
         const result = await SendFirst({
           input: inputText,
           trainingWords,
           setChatHistory,
         });
-        const modelMessage = { role: "model", parts: [{ text: result }] };
+        const modelMessage = { role: "assistant", content: result };
         setChatHistory((prev) => [...prev, modelMessage]);
       } catch (error) {
         console.error(error);
       }
-      setLoading(false);
     } else {
       try {
-        const userMessage = { role: "user", parts: [{ text: inputText }] };
+        const userMessage = { role: "user", content: inputText };
         setChatHistory((prev) => [...prev, userMessage]);
         const result = await sendAIMessage({ inputText, chatHistory });
-        const botMessage = { role: "model", parts: [{ result }] };
+        const botMessage = { role: "assistant", content: result };
         setChatHistory((prev) => [...prev, botMessage]);
       } catch (error) {
         console.error(error);
       }
-      setLoading(false);
     }
+    setLoading(false);
+    setInputText("");
   };
-
   const handleKeyboardDismiss = () => {
     Keyboard.dismiss();
   };
 
-  const refreshChat = async () => {
+  const refreshChat = () => {
     setChatHistory([]);
-    try {
-      await AsyncStorage.removeItem("chatHistory");
-    } catch (error) {
-      console.error("Failed to clear chat history:", error);
-    }
+    setFirstInput("");
   };
   useEffect(() => {
     if (flatListRef.current) {
@@ -209,10 +206,19 @@ export default function CreateSentence() {
             )}
           </>
         )}
+        {firstInput && <Text style={styles.userMessage}>{firstInput}</Text>}
       </>
     );
   };
-
+  function renderItem({ item }) {
+    return (
+      <View
+        style={item.role === "user" ? styles.userMessage : styles.botMessage}
+      >
+        <Markdown key={Math.random()} style={{body:{fontSize:17}}}>{item.content}</Markdown>
+      </View>
+    );
+  }
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -230,19 +236,9 @@ export default function CreateSentence() {
       <TouchableWithoutFeedback onPress={handleKeyboardDismiss}>
         <FlatList
           ref={flatListRef}
-          data={chatHistory}
+          data={chatHistory.slice(1)}
           removeClippedSubviews={false}
-          renderItem={({ item }) => (
-            <Text
-              key={Math.random()}
-              selectable={true}
-              style={
-                item.role === "user" ? styles.userMessage : styles.botMessage
-              }
-            >
-              {item.parts[0].text}
-            </Text>
-          )}
+          renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()}
           contentContainerStyle={styles.chatContainer}
           extraData={chatHistory}
@@ -262,6 +258,8 @@ export default function CreateSentence() {
         leftIcon={leftIcon}
         loading={loading}
         disabled={loading || !isShow}
+        multiline
+        clearTextOnFocus
       />
     </KeyboardAvoidingView>
   );
@@ -305,6 +303,7 @@ const styles = StyleSheet.create({
   },
   word: {
     fontSize: 18,
+    fontWeight: "bold",
   },
   icon: {
     marginLeft: 50,

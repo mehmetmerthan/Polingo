@@ -96,4 +96,12 @@ export default StyleSheet.create({
     borderRadius: 50,
     padding: 5,
   },
+  listHeader: {
+    justifyContent: "center",
+    alignItems: "center",
+    alignContent: "center",
+    alignSelf: "center",
+    padding: 10,
+    position: "absolute",
+  },
 });

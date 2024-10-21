@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text } from "react-native";
 import { ListItem, Button } from "@rneui/themed";
-import AntDesign from "@expo/vector-icons/AntDesign";
 import styles from "../../styles/wordsStyles";
 import { removeWord, changeWord } from "../../Utils/Service/wordService";
 import WordDetailModal from "../../components/WordDetailModal";
@@ -11,12 +10,8 @@ import * as Speech from "expo-speech";
 export const WordListLearning = ({
   item,
   index,
-  setLoading,
+  setLoadingState,
   fetchData,
-  setSlicedLearningWordList,
-  setSlicedLearnedWordList,
-  setLearningWordList,
-  setLearnedWordList,
 }) => {
   const [loadingDelete, setLoadingDelete] = useState(false);
   const [loadingChange, setLoadingChange] = useState(false);
@@ -26,19 +21,13 @@ export const WordListLearning = ({
   const [status, setStatus] = useState(item.isLearned);
   const handleDelete = async () => {
     try {
-      setLoading(true);
+      setLoadingState(true);
       setLoadingDelete(true);
       const result = await removeWord(item.id);
       if (result) {
-        setSlicedLearningWordList((prev) =>
-          prev.filter((word) => word.id !== item.id)
-        );
-        setLearningWordList((prev) =>
-          prev.filter((word) => word.id !== item.id)
-        );
+        await fetchData();
       }
-      await fetchData();
-      setLoading(false);
+      setLoadingState(false);
       setLoadingDelete(false);
     } catch (error) {
       console.error("Error deleting the word:", error);
@@ -46,7 +35,7 @@ export const WordListLearning = ({
   };
   const handleStatus = async () => {
     try {
-      setLoading(true);
+      setLoadingState(true);
       setLoadingChange(true);
       const updatedItem = { ...item, isLearned: !item.isLearned };
       const result = await changeWord({
@@ -54,17 +43,10 @@ export const WordListLearning = ({
         isLearned: !item.isLearned,
       });
       if (result) {
-        setSlicedLearningWordList((prev) =>
-          prev.filter((word) => word.id !== item.id)
-        );
-        setLearningWordList((prev) =>
-          prev.filter((word) => word.id !== item.id)
-        );
-        setSlicedLearnedWordList((prev) => [updatedItem, ...prev]);
-        setLearnedWordList((prev) => [updatedItem, ...prev]);
+        await fetchData();
       }
-      await fetchData();
-      setLoading(false);
+
+      setLoadingState(false);
       setLoadingChange(false);
     } catch (error) {
       console.error("Error changing the word:", error);
@@ -139,6 +121,7 @@ export const WordListLearning = ({
           }}
           disabled={loadingChange}
           checked={status}
+          size={35}
         />
         <View style={styles.wordTextContainer}>
           <Text style={styles.englishText}>{item.word}</Text>

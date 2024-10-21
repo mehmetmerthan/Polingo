@@ -12,20 +12,18 @@ import { AddWordForm } from "../../components/DictonaryComponents/AddWordForm";
 import styles from "../../styles/wordsStyles";
 import { WordListLearned } from "../../components/DictonaryComponents/WordListLearned";
 export default function WordsLearned({
-  loading,
-  setLoading,
+  loadingState,
+  setLoadingState,
   fetchData,
   allWords,
   userId,
   learnedWordList,
-  setSlicedLearningWordList,
   slicedLearnedWordList,
   setSlicedLearnedWordList,
-  setLearningWordList,
-  setLearnedWordList,
 }) {
   const [isAddFormVisible, setIsAddFormVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
   const pageSize = 20;
@@ -49,13 +47,17 @@ export default function WordsLearned({
     await fetchData();
     setRefreshing(false);
   };
-
   return (
     <View style={styles.container}>
       <SearchBarComponent
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
       />
+      {loadingState && (
+        <View style={styles.listHeader}>
+          <ActivityIndicator size="large" />
+        </View>
+      )}
       <FlatList
         data={slicedLearnedWordList}
         keyExtractor={(item) => item.id}
@@ -63,12 +65,8 @@ export default function WordsLearned({
           <WordListLearned
             item={item}
             index={index}
-            setLoading={setLoading}
+            setLoadingState={setLoadingState}
             fetchData={fetchData}
-            setSlicedLearningWordList={setSlicedLearningWordList}
-            setSlicedLearnedWordList={setSlicedLearnedWordList}
-            setLearningWordList={setLearningWordList}
-            setLearnedWordList={setLearnedWordList}
           />
         )}
         onEndReached={loadMoreWords}
@@ -83,7 +81,7 @@ export default function WordsLearned({
           setIsAddFormVisible={setIsAddFormVisible}
           userId={userId}
           allWords={allWords}
-          setLoading={setLoading}
+          setLoadingState={setLoadingState}
           fetchData={fetchData}
         />
       ) : (

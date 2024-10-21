@@ -7,7 +7,7 @@ import React, { useState, useEffect } from "react";
 const Tab = createMaterialTopTabNavigator();
 
 export default function DictioanryMaterialTop() {
-  const [loading, setLoading] = useState(true);
+  const [loadingState, setLoadingState] = useState(true);
   const [allWords, setAllWords] = useState([]);
   const [learningWordList, setLearningWordList] = useState([]);
   const [learnedWordList, setLearnedWordList] = useState([]);
@@ -17,7 +17,7 @@ export default function DictioanryMaterialTop() {
   const [learningWordsCount, setLearningWordsCount] = useState(0);
   const [learnedWordsCount, setLearnedWordsCount] = useState(0);
   const fetchData = async () => {
-    setLoading(true);
+    setLoadingState(true);
     const userId = await getUserId();
     setUserId(userId);
     const { learningWords, allWords, learnedWords } = await fetchWords({
@@ -30,7 +30,7 @@ export default function DictioanryMaterialTop() {
     setAllWords(allWords);
     setLearningWordsCount(learningWords.length);
     setLearnedWordsCount(learnedWords.length);
-    setLoading(false);
+    setLoadingState(false);
   };
   useEffect(() => {
     fetchData();
@@ -47,17 +47,14 @@ export default function DictioanryMaterialTop() {
         }`}
         children={() => (
           <WordsLearning
-            loading={loading}
-            setLoading={setLoading}
+            loadingState={loadingState}
+            setLoadingState={setLoadingState}
             fetchData={fetchData}
             allWords={allWords}
             setAllWords={setAllWords}
             learningWordList={learningWordList}
-            setLearningWordList={setLearningWordList}
-            setLearnedWordList={setLearnedWordList}
             slicedLearningWordList={slicedLearningWordList}
             setSlicedLearningWordList={setSlicedLearningWordList}
-            setSlicedLearnedWordList={setSlicedLearnedWordList}
             userId={userId}
           />
         )}
@@ -68,16 +65,13 @@ export default function DictioanryMaterialTop() {
         }`}
         children={() => (
           <WordsLearned
-            loading={loading}
-            setLoading={setLoading}
+            loadingState={loadingState}
+            setLoadingState={setLoadingState}
             fetchData={fetchData}
             allWords={allWords}
             learnedWordList={learnedWordList}
-            setLearningWordList={setLearningWordList}
-            setLearnedWordList={setLearnedWordList}
             slicedLearnedWordList={slicedLearnedWordList}
             setSlicedLearnedWordList={setSlicedLearnedWordList}
-            setSlicedLearningWordList={setSlicedLearningWordList}
             userId={userId}
           />
         )}

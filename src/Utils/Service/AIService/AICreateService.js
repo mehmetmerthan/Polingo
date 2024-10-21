@@ -1,60 +1,28 @@
-import {
-  GoogleGenerativeAI,
-  HarmCategory,
-  HarmBlockThreshold,
-} from "@google/generative-ai";
-import { API_KEY } from "../../../../constants";
+import { HF_TOKEN } from "../../../../constants";
+const apiKey = HF_TOKEN;
+const modelName = "mistralai/Mixtral-8x7B-Instruct-v0.1";
+const url = `https://api-inference.huggingface.co/models/${modelName}/v1/chat/completions`;
 
-const model_name = "gemini-1.5-pro";
-const genAI = new GoogleGenerativeAI(API_KEY);
-const generationConfig = {
-  maxOutputTokens: 2000,
-  temperature: 0.5,
-  topP: 0.9,
-  topK: 50,
-};
-const safetySettings = [
-  {
-    category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-    threshold: HarmBlockThreshold.BLOCK_NONE,
-  },
-  {
-    category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-    threshold: HarmBlockThreshold.BLOCK_NONE,
-  },
-  {
-    category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-    threshold: HarmBlockThreshold.BLOCK_NONE,
-  },
-  {
-    category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-    threshold: HarmBlockThreshold.BLOCK_NONE,
-  },
-];
-const model = genAI.getGenerativeModel({
-  model: model_name,
-  generationConfig: generationConfig,
-  safetySettings: safetySettings,
-  systemInstruction: systemInstruction,
-});
-
-const systemInstruction = `Sen çok iyi bir ingilizce öğretmenisin.`;
 function promptHandler({ input, trainingWords }) {
-  const updatedWords = trainingWords.join(", ");
-  const prompt = `Aşağıdaki listede verilen kelimeleri kullanarak İngilizce bir cümle kurdum.
-Görevin: 
-1. Cümleyi inceleyip doğru olup olmadığını kontrol etmek.
-2. Cümlede hata varsa, hatayı düzeltmek ve doğru halini vermek.
-3. Cümle doğruysa, sadece "Doğru" diye geri bildirim vermek.
+  const wordsArray = trainingWords.map((wordObj) => wordObj.word);
+  const updatedWords = wordsArray.join(", ");
+  const prompt = `You are an advanced English teacher. Your task is to evaluate the sentence created using the given words and provide detailed feedback. Follow these steps:
 
-Kelime Listesi: "${updatedWords}" 
-Kurulan Cümle: "${input}"
+1. Review the sentence to check if it is grammatically correct and makes sense.
+2. If there are any errors, identify and explain them clearly.
+3. Correct the sentence and provide the correct version.
+4. If the sentence is correct, simply respond with "Correct".
 
-Eğer cümlede bir hata tespit edersen, şu adımları izle:
-- Hatanın ne olduğunu açıkla.
-- Cümleyi nasıl düzelttiğini detaylandır.
+Additionally, if there are any advanced grammar points or vocabulary that the user might not be familiar with, provide a brief explanation to help them learn.
 
-Bu şekilde doğru geri bildirim verebilir misin?`;
+Word List: "${updatedWords}"
+Constructed Sentence: "${input}"
+
+If you find any errors in the sentence, follow these steps:
+- Explain what the error is.
+- Detail how you corrected the sentence.
+- Provide any relevant grammar or vocabulary tips to enhance the user's understanding.
+`;
   return prompt;
 }
 
@@ -62,13 +30,29 @@ async function SendFirst({ input, trainingWords, setChatHistory }) {
   try {
     const prompt = promptHandler({ input, trainingWords });
     setChatHistory((prev) => {
-      const userMessage = { role: "user", parts: [{ text: prompt }] };
+      const userMessage = { role: "user", content: prompt };
       return [...prev, userMessage];
     });
-    const result = await model.generateContent(prompt);
-    const response = result.response;
-    const text = response.text();
-    return text;
+    const body = {
+      model: modelName,
+      messages: [{ role: "user", content: prompt }],
+      max_tokens: 500,
+      stream: false,
+    };
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) {
+      throw new Error("Network response was not ok");
+    }
+    const data = await res.json();
+    const responstext = await data.choices[0].message.content;
+    return responstext;
   } catch (error) {
     console.error(error);
     return error;
@@ -77,11 +61,27 @@ async function SendFirst({ input, trainingWords, setChatHistory }) {
 
 async function sendAIMessage({ input, chatHistory }) {
   try {
-    const chat = model.startChat({ history: chatHistory });
-    const result = await chat.sendMessage(input);
-    const response = result.response;
-    const text = response.text();
-    return text;
+    const body = {
+      model: modelName,
+      messages: chatHistory,
+      max_tokens: 500,
+      stream: false,
+    };
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!res.ok) {
+      throw new Error("Network response was not ok");
+    }
+    const data = await res.json();
+    const responstext = data.choices[0].message.content;
+    return responstext;
   } catch (error) {
     console.error(error);
     return "error occurred";

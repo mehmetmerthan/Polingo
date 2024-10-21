@@ -11,7 +11,11 @@ export default function ScenarioStack() {
         component={ScenarioList}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="ScenarioChat" component={ScenarioChat} />
+      <Stack.Screen
+        name="ScenarioChat"
+        component={ScenarioChat}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 }

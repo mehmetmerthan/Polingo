@@ -10,12 +10,8 @@ import * as Speech from "expo-speech";
 export const WordListLearned = ({
   item,
   index,
-  setLoading,
+  setLoadingState,
   fetchData,
-  setSlicedLearningWordList,
-  setSlicedLearnedWordList,
-  setLearningWordList,
-  setLearnedWordList,
 }) => {
   const [loadingDelete, setLoadingDelete] = useState(false);
   const [loadingChange, setLoadingChange] = useState(false);
@@ -25,19 +21,13 @@ export const WordListLearned = ({
   const [status, setStatus] = useState(item.isLearned);
   const handleDelete = async () => {
     try {
-      setLoading(true);
+      setLoadingState(true);
       setLoadingDelete(true);
       const result = await removeWord(item.id);
       if (result) {
-        setSlicedLearnedWordList((prev) =>
-          prev.filter((word) => word.id !== item.id)
-        );
-        setLearnedWordList((prev) =>
-          prev.filter((word) => word.id !== item.id)
-        );
         await fetchData();
       }
-      setLoading(false);
+      setLoadingState(false);
       setLoadingDelete(false);
     } catch (error) {
       console.error("Error deleting the word:", error);
@@ -45,7 +35,7 @@ export const WordListLearned = ({
   };
   const handleStatus = async () => {
     try {
-      setLoading(true);
+      setLoadingState(true);
       setLoadingChange(true);
       const updatedItem = { ...item, isLearned: !item.isLearned };
       const result = await changeWord({
@@ -53,17 +43,9 @@ export const WordListLearned = ({
         isLearned: !item.isLearned,
       });
       if (result) {
-        setSlicedLearnedWordList((prev) =>
-          prev.filter((word) => word.id !== item.id)
-        );
-        setLearnedWordList((prev) =>
-          prev.filter((word) => word.id !== item.id)
-        );
-        setSlicedLearningWordList((prev) => [updatedItem, ...prev]);
-        setLearningWordList((prev) => [updatedItem, ...prev]);
         await fetchData();
       }
-      setLoading(false);
+      setLoadingState(false);
       setLoadingChange(false);
     } catch (error) {
       console.error("Error changing the word:", error);
@@ -138,6 +120,7 @@ export const WordListLearned = ({
           }}
           disabled={loadingChange}
           checked={status}
+          size={35}
         />
         <View style={styles.wordTextContainer}>
           <Text style={styles.englishText}>{item.word}</Text>

@@ -12,8 +12,8 @@ import { AddWordForm } from "../../components/DictonaryComponents/AddWordForm";
 import styles from "../../styles/wordsStyles";
 import { WordListLearning } from "../../components/DictonaryComponents/WordListLearning";
 export default function WordsLearning({
-  loading,
-  setLoading,
+  loadingState,
+  setLoadingState,
   fetchData,
   allWords,
   setAllWords,
@@ -21,12 +21,10 @@ export default function WordsLearning({
   learningWordList,
   setSlicedLearningWordList,
   slicedLearningWordList,
-  setSlicedLearnedWordList,
-  setLearningWordList,
-  setLearnedWordList,
 }) {
   const [isAddFormVisible, setIsAddFormVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
   const pageSize = 20;
@@ -76,6 +74,11 @@ export default function WordsLearning({
         setSearchTerm={setSearchTerm}
         handleSearch={handleSearch}
       />
+      {loadingState && (
+        <View style={styles.listHeader}>
+          <ActivityIndicator size="large" />
+        </View>
+      )}
       <FlatList
         data={slicedLearningWordList}
         keyExtractor={(item) => item.id}
@@ -83,12 +86,8 @@ export default function WordsLearning({
           <WordListLearning
             item={item}
             index={index}
-            setLoading={setLoading}
+            setLoadingState={setLoadingState}
             fetchData={fetchData}
-            setSlicedLearningWordList={setSlicedLearningWordList}
-            setSlicedLearnedWordList={setSlicedLearnedWordList}
-            setLearningWordList={setLearningWordList}
-            setLearnedWordList={setLearnedWordList}
           />
         )}
         onEndReached={loadMoreWords}
@@ -103,11 +102,9 @@ export default function WordsLearning({
           setIsAddFormVisible={setIsAddFormVisible}
           userId={userId}
           allWords={allWords}
-          setLoading={setLoading}
+          setLoadingState={setLoadingState}
           fetchData={fetchData}
           setAllWords={setAllWords}
-          setLearningWordList={setLearningWordList}
-          setSlicedLearningWordList={setSlicedLearningWordList}
         />
       ) : (
         <FloatingAction
