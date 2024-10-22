@@ -12,6 +12,10 @@ The application includes six main sections, each designed to provide a unique le
 
 ![Home Page](/assets/images/home.jpg)
 
+### Authentication
+- Users can register via email verification, ensuring secure and authenticated access to the app.
+![Authentication](/assets/images/authentication.jpg)
+
 ### 1. Oxford 5000 Words
 - Users can create their own personal dictionary by entering words and automatically saving their translations.
 - Two sections, **Learning** and **Learned**, allow users to mark words as learned or delete them.
@@ -58,6 +62,11 @@ The application includes six main sections, each designed to provide a unique le
 - **AWS Amplify**
 - **Gemini**
 - **Hugging Face**
+- **GraphQL**
+- **AppSync**
+- **Cognito**
+- **DynamoDB**
+- **Lambda**
 
 ## License
 
